@@ -23,3 +23,7 @@ Database Schema for Book Class
 | receiveDate  | DATE             | NULLABLE                    |
 | price        | DECIMAL(10,2)    | NOT NULL                    |
 
+UML Diagram
+
+![image](https://github.com/user-attachments/assets/de9a1824-5f82-4312-830b-d96c65d85fdb)
+
