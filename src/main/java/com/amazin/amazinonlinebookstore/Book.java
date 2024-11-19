@@ -1,7 +1,7 @@
 package com.amazin.amazinonlinebookstore;
 
-import java.awt.*;
-import java.util.Date;
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,8 +15,8 @@ public class Book {
     private String description;
     private String isbn;
     private String author;
-    private Date publishDate;
-    private Date receiveDate;
+    private LocalDate publishDate;
+    private LocalDate receiveDate;
     private double price;
 
     public Book(){
@@ -28,7 +28,7 @@ public class Book {
         this.publishDate = null;
         this.price = 0;
     }
-    public Book(String title, /*Image cover,*/ String description, String author, String isbn, Date publishDate, double price) {
+    public Book(String title, /*Image cover,*/ String description, String author, String isbn, LocalDate publishDate, double price) {
         this.title = title;
         // this.cover = cover;
         this.description = description;
@@ -45,8 +45,8 @@ public class Book {
     public String getAuthor() { return author; }
     public double getPrice() { return price; }
     public long getId() { return id; }
-    public Date getPublishDate() { return publishDate; }
-    public Date getReceiveDate() { return receiveDate; }
+    public LocalDate getPublishDate() { return publishDate; }
+    public LocalDate getReceiveDate() { return receiveDate; }
 
     public void setTitle(String newTitle) { this.title = newTitle; }
     // public void setCover(Image cover) { this.cover = cover; }
@@ -55,8 +55,8 @@ public class Book {
     public void setAuthor(String author) { this.author = author; }
     public void setPrice(double price) { this.price = price; }
     public void setId(long id) { this.id = id; }
-    public void setPublishDate(Date newDate) { this.publishDate = newDate; }
-    public void setReceiveDate(Date newDate) { this.receiveDate = newDate; }
+    public void setPublishDate(LocalDate newDate) { this.publishDate = newDate; }
+    public void setReceiveDate(LocalDate newDate) { this.receiveDate = newDate; }
 
     @Override
     public String toString(){

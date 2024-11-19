@@ -11,7 +11,7 @@
     <p><strong>Description:</strong> <span th:text="${Book.getDescription()}">Description</span></p>
     <p><strong>Author:</strong> <span th:text="${Book.getAuthor()}">Author</span></p>
     <p><strong>ISBN:</strong> <span th:text="${Book.getISBN()}">ISBN</span></p>
-    <p><strong>Publish Date:</strong> <span th:text="${#dates.format(Book.getPublishDate(), 'yyyy-MM-dd')}">Publish Date</span></p>
+    <p><strong>Publish Date:</strong> <span th:text="${#temporals.format(Book.publishDate, 'yyyy-MM-dd')}">Publish Date</span></p>
     <p><strong>Price:</strong> $<span th:text="${Book.getPrice()}">Price</span></p>
 </div>
 </body>

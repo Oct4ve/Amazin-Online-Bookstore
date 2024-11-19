@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @SpringBootApplication
 public class AccessingDatabase {
@@ -23,16 +24,6 @@ public class AccessingDatabase {
     @Bean
     public CommandLineRunner demo(BookRepository repository) {
         return (args) -> {
-            Book book = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", new Date(124, 1, 1), 42.99);
-
-            repository.save(book);
-
-            log.info("Books found with findAll():");
-            log.info("-------------------------------");
-            repository.findAll().forEach(books -> {
-                log.info(books.toString());
-            });
-            log.info("");
         };
     }
 }

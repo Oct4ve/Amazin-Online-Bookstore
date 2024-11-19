@@ -21,9 +21,4 @@ public class BookController {
         Book deleteBook = bookRepository.findById(id).orElseThrow();
         bookRepository.delete(deleteBook);
     }
-
-    @GetMapping("/{id}")
-    public Book getBook(@PathVariable Long id) {
-        return bookRepository.findById(id).orElseThrow();
-    }
 }
