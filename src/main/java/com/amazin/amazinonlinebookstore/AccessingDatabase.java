@@ -15,6 +15,7 @@ public class AccessingDatabase {
 
     private static final Logger log = LoggerFactory.getLogger(AccessingDatabase.class);
 
+
     public static void main(String[] args) {
         SpringApplication.run(AccessingDatabase.class, args);
     }
