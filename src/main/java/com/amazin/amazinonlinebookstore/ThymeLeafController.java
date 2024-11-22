@@ -45,6 +45,29 @@ public class ThymeLeafController {
         return "redirect:/"; // Redirect to home page after saving
     }
 
+    @GetMapping("/contact")
+    public String showContactPage(){
+        return "contact_info";
+    }
+
+    @GetMapping("/remove_book")
+    public String showRemoveBookForm(Model model) {
+        return "remove_book";
+    }
+
+    @PostMapping("/remove_book")
+    public String removeBook(@RequestParam("title") String title, Model model) {
+        Book book = bookRepository.findByTitle(title);
+
+        if (book != null) {
+            bookRepository.delete(book);
+            model.addAttribute("message", "Book with title '" + title + "' was successfully deleted.");
+        } else {
+            model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
+        }
+
+        return "remove_book";
+    }
 
 
 }
