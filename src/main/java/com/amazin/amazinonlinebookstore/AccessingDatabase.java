@@ -13,13 +13,13 @@ import java.sql.Date;
 @SpringBootApplication
 public class AccessingDatabase {
 
-    private static final Logger log = LoggerFactory.getLogger(AccessingDatabase.class);
+    //private static final Logger log = LoggerFactory.getLogger(AccessingDatabase.class);
 
     public static void main(String[] args) {
         SpringApplication.run(AccessingDatabase.class, args);
     }
 
-    @Bean
+    /*@Bean
     public CommandLineRunner demo(BookRepository repository) {
         return (args) -> {
             Book book = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", new Date(124, 1, 1), 42.99);
@@ -33,5 +33,5 @@ public class AccessingDatabase {
             });
             log.info("");
         };
-    }
+    }*/
 }

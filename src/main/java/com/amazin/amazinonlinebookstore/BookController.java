@@ -1,4 +1,5 @@
 // This controller controls everything in the database.
+// I don't think we need this at all
 
 package com.amazin.amazinonlinebookstore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,5 @@ public class BookController {
     public void removeBook(@PathVariable Long id){
         Book deleteBook = bookRepository.findById(id).orElseThrow();
         bookRepository.delete(deleteBook);
-    }
-
-    @GetMapping("/{id}")
-    public Book getBook(@PathVariable Long id) {
-        return bookRepository.findById(id).orElseThrow();
     }
 }

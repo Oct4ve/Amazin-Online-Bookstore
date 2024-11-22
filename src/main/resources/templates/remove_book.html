@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Remove Book</title>
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+
+<h1>Remove a Book</h1>
+
+<!-- Form to delete a book -->
+<form action="/remove_book" method="post">
+    <label for="title">Book Title:</label>
+    <input type="text" id="title" name="title" placeholder="Enter book title" required>
+    <button type="submit">Remove</button>
+</form>
+
+<!-- Display success or error message -->
+<p th:if="${message}" th:text="${message}" style="color: red;"></p>
+</body>
+</html>
+
