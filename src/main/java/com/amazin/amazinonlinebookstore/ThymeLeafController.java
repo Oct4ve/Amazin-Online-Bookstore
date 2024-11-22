@@ -45,7 +45,10 @@ public class ThymeLeafController {
         return "redirect:/"; // Redirect to home page after saving
     }
 
-
+    @PostMapping("/contact")
+    public String showContactPage(){
+        return "contact_info";
+    }
 
 }
 
