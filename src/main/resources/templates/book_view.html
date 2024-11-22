@@ -7,7 +7,7 @@
 <h1>Book Details</h1>
 
 <div>
-    <h2 th:text="${Book.id}">Book Title</h2>
+    <h2 th:text="${Book.getTitle()}">Book Title</h2>
     <p><strong>Description:</strong> <span th:text="${Book.getDescription()}">Description</span></p>
     <p><strong>Author:</strong> <span th:text="${Book.getAuthor()}">Author</span></p>
     <p><strong>ISBN:</strong> <span th:text="${Book.getISBN()}">ISBN</span></p>
