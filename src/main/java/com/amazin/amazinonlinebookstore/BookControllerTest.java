@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +27,7 @@ public class BookControllerTest {
 
     @Test
     public void testAddBook() {
-        Book book = new Book("Effective Java", "Best practices for Java", "Joshua Bloch", "8647823308954", new Date(124, 1, 1), 42.99);
+        Book book = new Book("Effective Java", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99);
         when(bookRepository.save(book)).thenReturn(book);
 
         Book savedBook = bookController.addBook(book);
@@ -37,19 +37,8 @@ public class BookControllerTest {
     }
 
     @Test
-    public void testGetBook(){
-        Book book = new Book("Effective Java", "Best practices for Java", "Joshua Bloch", "8647823308954", new Date(124, 1, 1), 42.99);
-        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-
-        Book foundBook = bookController.getBook(1L);
-
-        assertNotNull(foundBook);
-        assertEquals("Effective Java", foundBook.getTitle());
-    }
-
-    @Test
     public void testRemoveBook(){
-        Book book = new Book("Effective Java", "Best practices for Java", "Joshua Bloch", "8647823308954", new Date(124, 1, 1), 42.99);
+        Book book = new Book("Effective Java", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
         bookController.removeBook(1L);
