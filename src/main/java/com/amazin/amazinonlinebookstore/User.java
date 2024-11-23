@@ -1,10 +1,25 @@
 package com.amazin.amazinonlinebookstore;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private final String username;
     private final String password;
     private final PERMISSIONS permissions;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final ShoppingCart cart;
+
+    public User(){
+        this.username = "";
+        this.password = "";
+        this.permissions = PERMISSIONS.BASIC;
+        this.cart = null;
+    }
 
     public User(String username, String password){
         this.username = username;

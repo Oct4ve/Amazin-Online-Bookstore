@@ -2,6 +2,7 @@
 
 package com.amazin.amazinonlinebookstore;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.NoSuchElementException;
 
 @Controller
+@SessionAttributes("user") // it'll store the user into a session!
 public class ThymeLeafController {
     @Autowired
     private BookRepository bookRepository;
+    private UserRepository userRepository;
 
     // Home page mapping to display all books (or a welcome message)
     @GetMapping("/")
@@ -31,8 +34,23 @@ public class ThymeLeafController {
 
     @PostMapping("/login")
     public String loginAction(@RequestParam ("username") String username,
-                              @RequestParam ("password") String password){
+                              @RequestParam ("password") String password,
+                              HttpSession session, Model model){
+        User user = null;
+        if (userRepository.findByUsername(username) == null){
+            user = new User(username, password);
+            userRepository.save(user);
+        } else {
+            user = userRepository.findByUsername(username);
+        }
+
+        session.setAttribute("user", user);
         return "redirect:/";
+    }
+
+    @ModelAttribute("user")
+    public User getUserFromSession(HttpSession session){
+        return (User) session.getAttribute("user");
     }
 
     @GetMapping("/{id}/view")
