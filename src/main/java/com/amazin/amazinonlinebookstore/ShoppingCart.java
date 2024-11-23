@@ -8,10 +8,10 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
-    public static /* we might not want static here */ ArrayList<Book> cart;
+    @OneToMany
+    private List<Book> cart;
     @OneToOne
-    private final User user;
+    private User user;
     public ShoppingCart(){
         cart = new ArrayList<Book>();
         this.user = null;
@@ -22,6 +22,9 @@ public class ShoppingCart {
         this.user = user;
     }
 
+    public List<Book> getCartBooks(){
+        return cart;
+    }
     public void addToCart(Book book){
         cart.add(book);
     }

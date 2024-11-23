@@ -26,6 +26,7 @@ public class ThymeLeafController {
     public String homePage(Model model, @ModelAttribute("user") User user) {
         model.addAttribute("books", bookRepository.findAll()); // Adds all books to the model
 
+        // Displays who is logged in (if nobody it says Guest)
         if (user != null) {
             model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
         } else {
@@ -58,16 +59,26 @@ public class ThymeLeafController {
         return "redirect:/";
     }
 
+    // Gets current user
     @ModelAttribute("user")
     public User getUserFromSession(HttpSession session){
         return (User) session.getAttribute("user");
     }
 
+    // Displays all books
     @GetMapping("/{id}/view")
     public String viewBooks(@PathVariable Long id, Model model) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book with ID " + id + " not found"));
         model.addAttribute("Book", book);
         return "book_view";
+    }
+
+    // This should only be possible to reach if logged in.
+    @GetMapping("/cart")
+    public String viewCart(Model model, @ModelAttribute("user") User user){
+        model.addAttribute("userBooks", user.getCart().getCartBooks());
+        model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
+        return "view_cart";
     }
 
     // Get mapping for "Add Book" page
@@ -77,6 +88,7 @@ public class ThymeLeafController {
         return "add_book"; // Returns the add_book.html template
     }
 
+    // Post mapping for "Add Book" page
     @PostMapping("/add_book")
     public String addBook(@ModelAttribute Book book,
                           @RequestParam(value = "coverFile", required = false) MultipartFile coverFile, Model model) {
@@ -92,16 +104,19 @@ public class ThymeLeafController {
         return "redirect:/"; // Redirect to home page after saving
     }
 
+    // Contact Info page
     @GetMapping("/contact")
     public String showContactPage(){
         return "contact_info";
     }
 
+    // Displays remove book page
     @GetMapping("/remove_book")
     public String showRemoveBookForm(Model model) {
         return "remove_book";
     }
 
+    // Removes book from inventory
     @PostMapping("/remove_book")
     public String removeBook(@RequestParam("title") String title, Model model) {
         Book book = bookRepository.findByTitle(title);
