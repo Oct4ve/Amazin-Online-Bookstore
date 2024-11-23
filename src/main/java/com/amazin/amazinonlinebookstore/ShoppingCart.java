@@ -5,11 +5,11 @@ import java.util.List;
 public class ShoppingCart {
 
     public static /* we might not want static here */ ArrayList<Book> cart;
-    private final String username;
+    private final User user;
 
-    public ShoppingCart(String username) {
+    public ShoppingCart(User user) {
         cart = new ArrayList<Book>();
-        this.username = username;
+        this.user = user;
     }
 
     public void addToCart(Book book){

@@ -14,7 +14,8 @@ public class ShoppingCartTest {
 
     @BeforeEach
     void setUp() {
-        cart = new ShoppingCart("samwilson29");
+        User user1 = new User("pietro", "adamvoski");
+        cart = new ShoppingCart(user1);
         book1 = new Book();
         book1.setTitle("Book One");
         book1.setDescription("Book One Description");
