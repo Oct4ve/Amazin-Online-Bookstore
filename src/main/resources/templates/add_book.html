@@ -16,6 +16,11 @@
 
 <h1>Add a New Book</h1>
 
+<!-- Error Message -->
+<div th:if="${errorMessage}" class="error">
+  <p th:text="${errorMessage}"></p>
+</div>
+
 <!-- Form to Add a Book -->
 <form th:action="@{/add_book}" th:object="${book}" method="post" enctype="multipart/form-data">
   <div>

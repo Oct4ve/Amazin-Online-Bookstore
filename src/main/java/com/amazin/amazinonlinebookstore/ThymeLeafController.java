@@ -18,20 +18,30 @@ import java.util.NoSuchElementException;
 public class ThymeLeafController {
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
     private UserRepository userRepository;
 
     // Home page mapping to display all books (or a welcome message)
     @GetMapping("/")
-    public String homePage(Model model) {
+    public String homePage(Model model, @ModelAttribute("user") User user) {
         model.addAttribute("books", bookRepository.findAll()); // Adds all books to the model
+
+        if (user != null) {
+            model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
+        } else {
+            model.addAttribute("currentUser", "Guest"); // Default value if no user is logged in
+        }
+
         return "home"; // returns the home.html template
     }
 
+    // shows the login page
     @GetMapping("/login")
     public String loginPage(Model model){
         return "login";
     }
 
+    // Gets the username and password of user and assigns the user to the current session
     @PostMapping("/login")
     public String loginAction(@RequestParam ("username") String username,
                               @RequestParam ("password") String password,
@@ -69,7 +79,15 @@ public class ThymeLeafController {
 
     @PostMapping("/add_book")
     public String addBook(@ModelAttribute Book book,
-                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile) {
+                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile, Model model) {
+
+        // checks if the title already exists
+        if (bookRepository.findByTitle(book.getTitle()) != null) {
+            model.addAttribute("errorMessage", "A book with this title already exists. Please choose a different title.");
+            model.addAttribute("book", book); // Retain the input values in the form
+            return "add_book"; // Return to the form with an error message
+        }
+
         bookRepository.save(book); // Save the book to the database
         return "redirect:/"; // Redirect to home page after saving
     }
@@ -97,7 +115,6 @@ public class ThymeLeafController {
 
         return "remove_book";
     }
-
 
 }
 
