@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.Date;
 
-
+@SpringBootApplication
 public class AmazinOnlineBookstoreApplication {
 
     public static void main(String[] args) {

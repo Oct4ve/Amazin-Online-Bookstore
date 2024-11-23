@@ -1,9 +1,10 @@
 package com.amazin.amazinonlinebookstore;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShoppingCart {
 
-    public ArrayList<Book> cart;
+    public static ArrayList<Book> cart;
 
     public ShoppingCart() {
         cart = new ArrayList<Book>();
@@ -30,7 +31,9 @@ public class ShoppingCart {
         for (Book book: cart) {
             total += book.getPrice();
         }
+
         return total;
     }
+
 
 }

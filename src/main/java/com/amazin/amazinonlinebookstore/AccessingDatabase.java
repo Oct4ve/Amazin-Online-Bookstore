@@ -9,8 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
-@SpringBootApplication
+
 public class AccessingDatabase {
 
     //private static final Logger log = LoggerFactory.getLogger(AccessingDatabase.class);
@@ -18,11 +19,11 @@ public class AccessingDatabase {
     public static void main(String[] args) {
         SpringApplication.run(AccessingDatabase.class, args);
     }
-
-    /*@Bean
+/*
+    @Bean
     public CommandLineRunner demo(BookRepository repository) {
         return (args) -> {
-            Book book = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", new Date(124, 1, 1), 42.99);
+            Book book = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
 
             repository.save(book);
 
@@ -33,5 +34,5 @@ public class AccessingDatabase {
             });
             log.info("");
         };
-    }*/
+    } */
 }
