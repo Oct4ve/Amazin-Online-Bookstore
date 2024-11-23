@@ -24,6 +24,17 @@ public class ThymeLeafController {
         return "home"; // returns the home.html template
     }
 
+    @GetMapping("/login")
+    public String loginPage(Model model){
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String loginAction(@RequestParam ("username") String username,
+                              @RequestParam ("password") String password){
+        return "redirect:/";
+    }
+
     @GetMapping("/{id}/view")
     public String viewBooks(@PathVariable Long id, Model model) {
         Book book = bookRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Book with ID " + id + " not found"));

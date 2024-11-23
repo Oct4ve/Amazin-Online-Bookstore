@@ -4,10 +4,12 @@ import java.util.List;
 
 public class ShoppingCart {
 
-    public static ArrayList<Book> cart;
+    public static /* we might not want static here */ ArrayList<Book> cart;
+    private final String username;
 
-    public ShoppingCart() {
+    public ShoppingCart(String username) {
         cart = new ArrayList<Book>();
+        this.username = username;
     }
 
     public void addToCart(Book book){
