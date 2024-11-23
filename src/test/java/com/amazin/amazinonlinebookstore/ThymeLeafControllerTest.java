@@ -111,4 +111,6 @@ public class ThymeLeafControllerTest {
                 .andExpect(view().name("remove_book"))
                 .andExpect(model().attribute("message", "Error: Book with title 'Nonexistent Book' not found."));
     }
+
+
 }
