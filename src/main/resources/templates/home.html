@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - Amazin Online Bookstore</title>
+  <link rel="stylesheet" href="/styles.css"> <!-- Link to your CSS for styling -->
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<nav>
+  <ul>
+    <li><a href="/login">Login</a></li>
+    <li><a href="/add_book">Add Book</a></li>
+    <li><a href="/remove_book">Remove Book</a></li>
+    <li><a href="/cart">Shopping Cart</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Main Content -->
+<h1>Welcome to Amazin Online Bookstore</h1>
+<h2>Our Collection of Books</h2>
+
+<div>
+  <ul>
+    <!-- Iterate through the books list passed from the controller -->
+    <li th:each="book : ${books}">
+      <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>
