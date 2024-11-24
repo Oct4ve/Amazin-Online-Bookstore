@@ -81,6 +81,15 @@ public class ThymeLeafController {
         return "view_cart";
     }
 
+    // Adds a book to the user's cart
+    @PostMapping("/addToCart")
+    public String addBookToCart(@RequestParam("bookId") Long bookId, HttpSession session){
+        User user = getUserFromSession(session);
+        // Have to make sure that you can't add the same book twice
+        user.addToUserCart(bookRepository.findByid(bookId));
+        return "redirect:/cart";
+    }
+
     // Get mapping for "Add Book" page
     @GetMapping("/add_book")
     public String showAddBookForm(Model model) {
@@ -117,6 +126,7 @@ public class ThymeLeafController {
     }
 
     // Removes book from inventory
+    // This should remove the book from all carts as well.
     @PostMapping("/remove_book")
     public String removeBook(@RequestParam("title") String title, Model model) {
         Book book = bookRepository.findByTitle(title);
