@@ -22,6 +22,10 @@ public class ShoppingCart {
         this.user = user;
     }
 
+    public List<Book> getShopCart(){
+        return cart;
+    }
+
     public List<Book> getCartBooks(){
         return cart;
     }
