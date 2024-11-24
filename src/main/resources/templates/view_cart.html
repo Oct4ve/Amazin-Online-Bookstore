@@ -18,11 +18,22 @@
 
 <div>
     <ul>
-        <!-- Iterate through the books list passed from the controller -->
+        <!-- Iterate through the books in the user's cart -->
         <li th:each="book : ${userBooks}">
+            <!-- Display book title as a clickable link -->
             <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
+            <!-- Form to remove the book from the cart -->
+            <form th:action="@{'/removeFromCart'}" method="POST" style="display: inline;">
+                <input type="hidden" name="bookId" th:value="${book.id}" />
+                <button type="submit">Remove From Cart</button>
+            </form>
         </li>
     </ul>
+</div>
+
+<!-- Message when the cart is empty -->
+<div th:if="${userBooks == null || #lists.isEmpty(userBooks)}">
+    <p>Your cart is empty. Start adding books to see them here!</p>
 </div>
 
 </body>

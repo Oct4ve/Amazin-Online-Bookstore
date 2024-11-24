@@ -8,7 +8,7 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Book> cart;
     @OneToOne
     private User user;

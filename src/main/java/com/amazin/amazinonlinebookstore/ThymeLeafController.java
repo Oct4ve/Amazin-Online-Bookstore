@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -42,21 +43,50 @@ public class ThymeLeafController {
         return "login";
     }
 
-    // Gets the username and password of user and assigns the user to the current session
+    // Logs user in if username and password are correct. If not, redirects back to the login page.
     @PostMapping("/login")
-    public String loginAction(@RequestParam ("username") String username,
-                              @RequestParam ("password") String password,
-                              HttpSession session, Model model){
-        User user = null;
-        if (userRepository.findByUsername(username) == null){
-            user = new User(username, password);
-            userRepository.save(user);
-        } else {
-            user = userRepository.findByUsername(username);
+    public String loginAction(@RequestParam("username") String username,
+                              @RequestParam("password") String password,
+                              HttpSession session, Model model) {
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            model.addAttribute("error", "Username not found. Please try again.");
+            return "login"; // Redirect back to login with an error message
         }
 
+        if (!Objects.equals(password, user.getPassword())) {
+            model.addAttribute("error", "Incorrect password. Please try again.");
+            return "login"; // Redirect back to login with an error message
+        }
+
+        // If login is successful, add user to session
         session.setAttribute("user", user);
-        return "redirect:/";
+        return "redirect:/"; // Redirect to the home page
+    }
+
+    @GetMapping("/signup")
+    public String signupPage() {
+        return "signup"; // Render the signup form
+    }
+
+    @PostMapping("/signup")
+    public String signupAction(@RequestParam("username") String username,
+                               @RequestParam("password") String password,
+                               Model model) {
+        // Check if the user already exists
+        if (userRepository.findByUsername(username) != null) {
+            model.addAttribute("error", "Username already exists. Please choose a different one.");
+            return "signup"; // Redirect back to signup with an error
+        }
+
+        // Create a new user and save it to the repository
+        User newUser = new User(username, password);
+        userRepository.save(newUser);
+
+        model.addAttribute("success", "Account created successfully! You can now log in.");
+        return "redirect:/login"; // Redirect to the login page
     }
 
     // Gets current user
@@ -83,10 +113,28 @@ public class ThymeLeafController {
 
     // Adds a book to the user's cart
     @PostMapping("/addToCart")
-    public String addBookToCart(@RequestParam("bookId") Long bookId, HttpSession session){
+    public String addBookToCart(@RequestParam("bookId") Long bookId, HttpSession session) {
         User user = getUserFromSession(session);
-        // Have to make sure that you can't add the same book twice
-        user.addToUserCart(bookRepository.findByid(bookId));
+        Book bookToAdd = bookRepository.findByid(bookId);
+
+        if (bookToAdd != null && !user.getCart().getCartBooks().contains(bookToAdd)) {
+            // Add the book to the cart only if it's not already in the cart
+            user.addToUserCart(bookToAdd);
+            // userRepository.save(user);
+        } else {
+            // Handle the case where the book is already in the cart or doesn't exist
+            // I gotta put something here to display the error message on the page
+            System.out.println("Book is already in the cart or not found.");
+        }
+
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/removeFromCart")
+    public String removeBookFromCart(@RequestParam("bookId") Long bookId, HttpSession session){
+        User user = getUserFromSession(session);
+        user.removeFromUserCart(bookRepository.findByid(bookId));
+        //userRepository.save(user);
         return "redirect:/cart";
     }
 
