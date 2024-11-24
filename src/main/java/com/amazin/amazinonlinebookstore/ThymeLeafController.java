@@ -189,5 +189,8 @@ public class ThymeLeafController {
         return "remove_book";
     }
 
-}
+    @GetMapping("/error")
+    public String showErrorPage(){
+        return "error";
+    }
 
