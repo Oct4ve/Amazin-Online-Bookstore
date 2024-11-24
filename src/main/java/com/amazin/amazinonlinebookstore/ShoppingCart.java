@@ -1,14 +1,30 @@
 package com.amazin.amazinonlinebookstore;
+import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class ShoppingCart {
-
-    public ArrayList<Book> cart;
-
-    public ShoppingCart() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    @OneToMany
+    private List<Book> cart;
+    @OneToOne
+    private User user;
+    public ShoppingCart(){
         cart = new ArrayList<Book>();
+        this.user = null;
     }
 
+    public ShoppingCart(User user) {
+        cart = new ArrayList<Book>();
+        this.user = user;
+    }
+
+    public List<Book> getCartBooks(){
+        return cart;
+    }
     public void addToCart(Book book){
         cart.add(book);
     }
@@ -30,7 +46,9 @@ public class ShoppingCart {
         for (Book book: cart) {
             total += book.getPrice();
         }
+
         return total;
     }
+
 
 }

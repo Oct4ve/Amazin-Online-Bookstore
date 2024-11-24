@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Cart - Amazin Online Bookstore</title>
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+
+<h1>Your Cart</h1>
+<p th:text="'Logged in as: ' + ${currentUser}"></p>
+
+<div>
+    <ul>
+        <!-- Iterate through the books list passed from the controller -->
+        <li th:each="book : ${userBooks}">
+            <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>
