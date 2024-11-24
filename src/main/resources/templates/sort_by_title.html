@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Books Sorted by Title</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<nav>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/sort_books">Sort Books</a></li>
+  </ul>
+</nav>
+
+<h1>Books Sorted by Title</h1>
+<div>
+  <ul>
+    <!-- Iterate through the books list passed from the controller -->
+    <li th:each="book : ${books}">
+      <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
+    </li>
+  </ul>
+</div>
+</body>
+</html>
