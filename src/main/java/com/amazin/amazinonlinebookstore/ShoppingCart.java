@@ -22,13 +22,14 @@ public class ShoppingCart {
         this.user = user;
     }
 
-    public List<Book> getShopCart(){
-        return cart;
-    }
-
     public List<Book> getCartBooks(){
         return cart;
     }
+
+    public User getUser(){
+        return user;
+    }
+
     public void addToCart(Book book){
         cart.add(book);
     }

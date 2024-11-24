@@ -43,8 +43,8 @@ public class UserTest {
 
         // Check if book was added to cart
         assertNotNull(user.getCart());
-        assertEquals(1, user.getCart().getShopCart().size());
-        assertEquals("Effective Java", user.getCart().getShopCart().get(0).getTitle());
+        assertEquals(1, user.getCart().getCartBooks().size());
+        assertEquals("Effective Java", user.getCart().getCartBooks().get(0).getTitle());
     }
 
     @Test
@@ -60,9 +60,9 @@ public class UserTest {
 
         // Check the cart size and contents
         assertNotNull(user.getCart());
-        assertEquals(2, user.getCart().getShopCart().size());
-        assertEquals("Book1", user.getCart().getShopCart().get(0).getTitle());
-        assertEquals("Book2", user.getCart().getShopCart().get(1).getTitle());
+        assertEquals(2, user.getCart().getCartBooks().size());
+        assertEquals("Book1", user.getCart().getCartBooks().get(0).getTitle());
+        assertEquals("Book2", user.getCart().getCartBooks().get(1).getTitle());
 
     }
 }
