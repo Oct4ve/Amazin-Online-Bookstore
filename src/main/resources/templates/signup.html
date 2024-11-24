@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Amazin Online Bookstore</title>
+    <title>Signup - Amazin Online Bookstore</title>
 </head>
 <body>
 
 <!-- Navigation Menu -->
 <nav>
     <ul>
-        <li><a href="/signup">Sign Up</a></li>
         <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
     </ul>
 </nav>
 
 <div class="form-container">
-    <h2>Login</h2>
-    <form action="/login" method="POST">
+    <h2>Signup</h2>
+    <form action="/signup" method="POST">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <button type="submit">Login</button>
+        <button type="submit">Sign Up</button>
     </form>
 
     <!-- Error Message Display -->
     <div class="error-message" th:if="${error != null}">
         <p th:text="${error}" style="color: red;"></p>
+    </div>
+
+    <!-- Success Message Display -->
+    <div class="success-message" th:if="${success != null}">
+        <p th:text="${success}" style="color: green;"></p>
     </div>
 </div>
 
