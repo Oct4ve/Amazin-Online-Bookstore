@@ -28,7 +28,7 @@ public class BookTest {
         book.setTitle("Effective Java");
         book.setDescription("Best practices for Java");
         book.setAuthor("Joshua Bloch");
-        book.setIsbn("8647823308954");
+        book.setISBN("8647823308954");
         book.setPrice(42.99);
         book.setPublishDate(LocalDate.of(2024,1,1));
 
