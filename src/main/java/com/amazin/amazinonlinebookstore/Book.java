@@ -1,6 +1,7 @@
 package com.amazin.amazinonlinebookstore;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import jakarta.persistence.*;
 
@@ -68,6 +69,11 @@ public class Book {
         if (obj == null || getClass() != obj.getClass()) return false;
         Book book = (Book) obj;
         return id == book.id; // Compare based on the unique id
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id); // Hash based on ID
     }
 }
 

@@ -122,7 +122,7 @@ public class ThymeLeafController {
         if (bookToAdd != null && !user.getCart().getCartBooks().contains(bookToAdd)) {
             // Add the book to the cart only if it's not already in the cart
             user.addToUserCart(bookToAdd);
-            // userRepository.save(user);
+            userRepository.save(user);
         } else {
             // Handle the case where the book is already in the cart or doesn't exist
             // I gotta put something here to display the error message on the page
@@ -136,7 +136,7 @@ public class ThymeLeafController {
     public String removeBookFromCart(@RequestParam("bookId") Long bookId, HttpSession session) {
         User user = getUserFromSession(session);
         user.removeFromUserCart(bookRepository.findByid(bookId));
-        //userRepository.save(user);
+        userRepository.save(user);
         return "redirect:/cart";
     }
 
