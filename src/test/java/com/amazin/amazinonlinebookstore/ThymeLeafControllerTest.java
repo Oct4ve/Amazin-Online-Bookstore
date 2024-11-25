@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -167,7 +168,56 @@ public class ThymeLeafControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
 
+    @Test
+    public void testCheckoutPage() throws Exception {
+        // Mock user and cart setup
+        User mockUser = new User("testuser", "password");
+        ShoppingCart mockCart = new ShoppingCart(mockUser);
 
+        Book book1 = new Book("Book1", "Description1", "Author1", "12345", null, 10.0);
+        Book book2 = new Book("Book2", "Description2", "Author2", "67890", null, 20.0);
+        mockCart.addToCart(book1);
+        mockCart.addToCart(book2);
+
+        mockUser.getCart().addToCart(book1);
+        mockUser.getCart().addToCart(book2);
+
+        Mockito.when(userRepository.findByUsername("testuser")).thenReturn(mockUser);
+
+        mockMvc.perform(get("/checkout").sessionAttr("user", mockUser))
+                .andExpect(status().isOk())
+                .andExpect(view().name("checkout"))
+                .andExpect(model().attributeExists("userBooks"))
+                .andExpect(model().attributeExists("total"))
+                .andExpect(model().attribute("total", 30.0));
+    }
+
+    @Test
+    public void testPurchase() throws Exception {
+        // Mock user and cart setup
+        User mockUser = new User("testuser", "password");
+        ShoppingCart mockCart = new ShoppingCart(mockUser);
+
+        Book book1 = new Book("Book1", "Description1", "Author1", "12345", null, 10.0);
+        Book book2 = new Book("Book2", "Description2", "Author2", "67890", null, 20.0);
+        mockCart.addToCart(book1);
+        mockCart.addToCart(book2);
+
+        mockUser.getCart().addToCart(book1);
+        mockUser.getCart().addToCart(book2);
+
+        Mockito.when(userRepository.findByUsername("testuser")).thenReturn(mockUser);
+
+        mockMvc.perform(post("/purchase").sessionAttr("user", mockUser))
+                .andExpect(status().isOk())
+                .andExpect(view().name("purchased"))
+                .andExpect(model().attributeExists("purchasedBooks"))
+                .andExpect(model().attributeExists("total"))
+                .andExpect(model().attribute("total", 30.0));
+
+        // Assert that the cart is cleared after purchase
+        assertEquals(0, mockUser.getCart().getCartBooks().size());
     }
 }
