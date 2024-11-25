@@ -23,7 +23,8 @@ public class ThymeLeafControllerTest {
     @MockBean
     private BookRepository bookRepository;
 
-    @MockBean UserRepository userRepository;
+    @MockBean
+    UserRepository userRepository;
 
     @Test
     public void testHomePage() throws Exception {
@@ -138,7 +139,7 @@ public class ThymeLeafControllerTest {
     @Test
     public void testLoginPage() throws Exception {
         mockMvc.perform(get("/login"))
-        .andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(view().name("login"));
     }
 
@@ -147,11 +148,12 @@ public class ThymeLeafControllerTest {
         Mockito.when(userRepository.findByUsername("newuser")).thenReturn(null);
 
         mockMvc.perform(post("/login")
-                    .param("username", "newuser")
-                    .param("password", "password123")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                        .param("username", "newuser")
+                        .param("password", "password123")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"))
+                .andExpect(model().attribute("error", "Username not found. Please try again."));
     }
 
     @Test
@@ -168,3 +170,4 @@ public class ThymeLeafControllerTest {
 
 
     }
+}

@@ -22,6 +22,7 @@ public class ShoppingCartTest {
         book1.setISBN("Book One Isbn");
         book1.setISBN("Book One Isbn");
         book1.setPrice(20.00);
+        book1.setId(1L);
 
         book2 = new Book();
         book2.setTitle("Book Two");
@@ -30,6 +31,7 @@ public class ShoppingCartTest {
         book2.setISBN("Book Two Isbn");
         book2.setISBN("Book Two Isbn");
         book2.setPrice(30.00);
+        book2.setId(2L);
     }
 
     @Test
