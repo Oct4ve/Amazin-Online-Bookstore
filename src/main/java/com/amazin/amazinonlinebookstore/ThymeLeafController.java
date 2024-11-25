@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -243,5 +240,57 @@ public class ThymeLeafController {
         model.addAttribute("books", books);
         return "sort_by_date_new";
     }
+
+    // Checkout page
+    @GetMapping("/checkout")
+    public String checkoutPage(Model model, @ModelAttribute("user") User user) {
+        if (user == null || user.getCart() == null) {
+            model.addAttribute("userBooks", List.of()); // Empty cart
+            model.addAttribute("total", 0.0);
+            return "checkout";
+        }
+
+        List<Book> userBooks = user.getCart().getCartBooks();
+        double total = user.getCart().calculateTotal();
+
+        model.addAttribute("userBooks", userBooks);
+        model.addAttribute("total", total);
+        model.addAttribute("currentUser", user.getUsername());
+        return "checkout";
+    }
+
+    // Handle checkout
+    @PostMapping("/checkout")
+    public String completePurchase(@ModelAttribute("user") User user) {
+        if (user != null && user.getCart() != null) {
+            user.getCart().emptyCart(); // Clear the cart after purchase
+            userRepository.save(user); // Save the updated user
+        }
+        return "redirect:/"; // Redirect to home page after checkout
+    }
+
+    @PostMapping("/purchase")
+    public String purchaseBooks(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getCart() == null || user.getCart().getCartBooks().isEmpty()) {
+            model.addAttribute("message", "Your cart is empty. Add books to make a purchase.");
+            return "redirect:/cart"; // Redirect to cart if empty
+        }
+
+        // Get the books to display them on the confirmation page
+        List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
+        double total = user.getCart().calculateTotal();
+
+        // Clear the cart after purchase
+        user.getCart().emptyCart();
+        userRepository.save(user); // Persist changes to the database
+
+        // Add the purchased books and total to the model for the confirmation page
+        model.addAttribute("purchasedBooks", purchasedBooks);
+        model.addAttribute("total", total);
+
+        return "purchased"; // Redirect to the purchased.html confirmation page
+    }
+
 }
 

@@ -4,6 +4,8 @@ package com.amazin.amazinonlinebookstore;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -67,6 +69,69 @@ public class BookTest {
         // Verify that the toString method matches the expected string format
         String expectedString = "\nTitle: Effective Java\nAuthor: Joshua Bloch\nPublish Date: 2024-01-01\nISBN: 8647823308954\nPrice: 42.99";
         assertEquals(expectedString, book.toString());
+    }
+
+    @Test
+    void testEquals_SameId() {
+        Book book1 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book2 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+
+        // Simulate same ID for testing
+        book1.setId(1L);
+        book2.setId(1L);
+
+        assertTrue(book1.equals(book2));
+    }
+
+    @Test
+    void testEquals_DifferentId() {
+        Book book1 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book2 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+
+        // Simulate different IDs
+        book1.setId(1L);
+        book2.setId(2L);
+
+        assertFalse(book1.equals(book2));
+    }
+
+    @Test
+    void testHashCode_SameId() {
+        Book book1 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book2 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+
+        // Simulate same ID
+        book1.setId(1L);
+        book2.setId(1L);
+
+        assertEquals(book1.hashCode(), book2.hashCode());
+    }
+
+    @Test
+    void testHashCode_DifferentId() {
+        Book book1 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book2 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+
+        // Simulate different IDs
+        book1.setId(1L);
+        book2.setId(2L);
+
+        assertNotEquals(book1.hashCode(), book2.hashCode());
+    }
+    @Test
+    void testHashCodeAndEquals_CollectionBehavior() {
+        Book book1 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book2 = new Book("Effective Java",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+
+        // Simulate same ID
+        book1.setId(1L);
+        book2.setId(1L);
+
+        HashSet<Book> bookSet = new HashSet<>();
+        bookSet.add(book1);
+
+        // Ensure book2 is recognized as the same object in the set
+        assertTrue(bookSet.contains(book2));
     }
 
 
