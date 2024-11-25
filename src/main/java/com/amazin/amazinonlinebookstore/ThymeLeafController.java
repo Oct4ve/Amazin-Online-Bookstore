@@ -263,7 +263,10 @@ public class ThymeLeafController {
     @PostMapping("/checkout")
     public String completePurchase(@ModelAttribute("user") User user) {
         if (user != null && user.getCart() != null) {
-            user.getCart().emptyCart(); // Clear the cart after purchase
+            for(Book book: user.getCart().getCartBooks()){
+                long bookId = book.getId();
+                user.removeFromUserCart(bookRepository.findByid(bookId));
+            }
             userRepository.save(user); // Save the updated user
         }
         return "redirect:/"; // Redirect to home page after checkout
