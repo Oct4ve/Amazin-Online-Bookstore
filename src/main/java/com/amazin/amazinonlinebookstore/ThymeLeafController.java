@@ -39,7 +39,7 @@ public class ThymeLeafController {
 
     // shows the login page
     @GetMapping("/login")
-    public String loginPage(Model model){
+    public String loginPage(Model model) {
         return "login";
     }
 
@@ -91,7 +91,7 @@ public class ThymeLeafController {
 
     // Gets current user
     @ModelAttribute("user")
-    public User getUserFromSession(HttpSession session){
+    public User getUserFromSession(HttpSession session) {
         return (User) session.getAttribute("user");
     }
 
@@ -105,7 +105,7 @@ public class ThymeLeafController {
 
     // This should only be possible to reach if logged in.
     @GetMapping("/cart")
-    public String viewCart(Model model, @ModelAttribute("user") User user){
+    public String viewCart(Model model, @ModelAttribute("user") User user) {
         model.addAttribute("userBooks", user.getCart().getCartBooks());
         model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
         return "view_cart";
@@ -131,7 +131,7 @@ public class ThymeLeafController {
     }
 
     @PostMapping("/removeFromCart")
-    public String removeBookFromCart(@RequestParam("bookId") Long bookId, HttpSession session){
+    public String removeBookFromCart(@RequestParam("bookId") Long bookId, HttpSession session) {
         User user = getUserFromSession(session);
         user.removeFromUserCart(bookRepository.findByid(bookId));
         //userRepository.save(user);
@@ -163,7 +163,7 @@ public class ThymeLeafController {
 
     // Contact Info page
     @GetMapping("/contact")
-    public String showContactPage(){
+    public String showContactPage() {
         return "contact_info";
     }
 
@@ -190,7 +190,8 @@ public class ThymeLeafController {
     }
 
     @GetMapping("/error")
-    public String showErrorPage(){
+    public String showErrorPage() {
         return "error";
     }
+}
 
