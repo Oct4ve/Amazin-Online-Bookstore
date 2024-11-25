@@ -12,7 +12,7 @@ public class User {
     private final String username;
     private final String password;
     private final PERMISSIONS permissions;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     private final ShoppingCart cart;
 
     public User(){
@@ -44,4 +44,5 @@ public class User {
     public void addToUserCart(Book book){
         this.cart.addToCart(book);
     }
+    public void removeFromUserCart(Book book) { this.cart.removeFromCart(book); }
 }

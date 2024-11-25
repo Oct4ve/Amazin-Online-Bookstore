@@ -62,6 +62,13 @@ public class Book {
     public String toString(){
         return "\nTitle: " + title + "\nAuthor: " + author + "\nPublish Date: " + publishDate + "\nISBN: " + isbn + "\nPrice: " + price;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Book book = (Book) obj;
+        return id == book.id; // Compare based on the unique id
+    }
 }
 
 
