@@ -66,5 +66,5 @@ For Milestone 3 our plan is:
 - Make the UI nicer and the interface should not have any dangling links to non-implemented features
 - Book recommendations and add the values needed for Jaccard Distance
 - UI and Integration tests for the new implemented features
-
+- Make recieve_date work for what date the book was added to the site
 
