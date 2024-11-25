@@ -8,6 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,7 +174,115 @@ public class ThymeLeafControllerTest {
     }
 
     @Test
-    public void testCheckoutPage() throws Exception {
+    public void testSortByAuthor() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Z Title", "Description", "Author B", "12345", null, 20.0),
+                new Book("A Title", "Description", "Author A", "12346", null, 10.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_author endpoint
+        mockMvc.perform(get("/sort_by_author"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_author"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted(Comparator.comparing(Book::getAuthor))
+                        .toList())); // // Verify the books are sorted by author alphabetically
+    }
+
+    @Test
+    public void testSortByTitle() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Z Title", "Description", "Author B", "12345", null, 20.0),
+                new Book("A Title", "Description", "Author A", "12346", null, 10.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_title endpoint
+        mockMvc.perform(get("/sort_by_title"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_title"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted(Comparator.comparing(Book::getTitle))
+                        .toList())); // Validate books are sorted alphabetically by title
+    }
+
+    @Test
+    public void testSortByPriceLow() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Book1", "Description", "Author A", "12345", null, 20.0),
+                new Book("Book2", "Description", "Author B", "12346", null, 10.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_price_low endpoint
+        mockMvc.perform(get("/sort_by_price_low"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_price_low"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted(Comparator.comparingDouble(Book::getPrice))
+                        .toList())); // Verify the books are sorted in ascending order of price
+    }
+
+    @Test
+    public void testSortByPriceHigh() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Book1", "Description", "Author A", "12345", null, 10.0),
+                new Book("Book2", "Description", "Author B", "12346", null, 20.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_price_high endpoint
+        mockMvc.perform(get("/sort_by_price_high"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_price_high"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted((b1, b2) -> Double.compare(b2.getPrice(), b1.getPrice()))
+                        .toList())); // Verify the books are sorted in descending order of price
+    }
+
+    @Test
+    public void testSortByDateOldestFirst() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Book1", "Description", "Author A", "12345", LocalDate.of(2000, 01, 01), 10.0),
+                new Book("Book2", "Description", "Author B", "12346", LocalDate.of(1900, 01, 01), 20.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_date_old endpoint
+        mockMvc.perform(get("/sort_by_date_old"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_date_old"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted(Comparator.comparing(Book::getPublishDate))
+                        .toList())); // Validate books are sorted by the oldest publishing date first
+    }
+
+    @Test
+    public void testSortByDateNewestFirst() throws Exception {
+        List<Book> books = Arrays.asList(
+                new Book("Book1", "Description", "Author A", "12345", LocalDate.of(1900, 01, 01), 10.0),
+                new Book("Book2", "Description", "Author B", "12346", LocalDate.of(2000, 01, 01), 20.0)
+        );
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        // Perform a GET request to the /sort_by_date_new endpoint
+        mockMvc.perform(get("/sort_by_date_new"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("sort_by_date_new"))
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("books", books.stream()
+                        .sorted((b1, b2) -> b2.getPublishDate().compareTo(b1.getPublishDate()))
+                        .toList())); // Verify books are sorted by the newest publishing date first
+    }
+
+    @Test
+    public void testCheckout() throws Exception {
         // Mock user and cart setup
         User mockUser = new User("testuser", "password");
         ShoppingCart mockCart = new ShoppingCart(mockUser);
