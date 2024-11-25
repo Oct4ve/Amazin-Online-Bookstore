@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -281,7 +278,7 @@ public class ThymeLeafController {
         }
 
         // Get the books to display them on the confirmation page
-        List<Book> purchasedBooks = user.getCart().getCartBooks();
+        List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
         double total = user.getCart().calculateTotal();
 
         // Clear the cart after purchase
