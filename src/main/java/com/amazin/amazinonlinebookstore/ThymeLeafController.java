@@ -295,5 +295,24 @@ public class ThymeLeafController {
         return "purchased"; // Redirect to the purchased.html confirmation page
     }
 
+    @GetMapping("/search_book")
+    public String showSearchBookForm(Model model) {
+        return "search_book";
+    }
+
+    @PostMapping("/search_book")
+    public String searchBook(@RequestParam("title") String title, Model model) {
+        Book book = bookRepository.findByTitle(title);
+
+        if (book != null) {
+            model.addAttribute("Book", book);
+            return "book_view";
+        } else {
+            model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
+        }
+
+        return "search_book";
+    }
+
 }
 
