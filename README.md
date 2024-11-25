@@ -1,14 +1,19 @@
 Amazin Online Bookstore
 
-The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf.
+The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database (in the future only special users will be able to do this), add/remove books from their cart and view all the books in the database.
 
-Classes Book: This class represents the Book entity and contains attributes such as title, ISBN, description, author, publish date and price.
+Object Classes:
+Book: This class represents the Book entity and contains attributes such as title, ISBN, description, author, publish date and price.
+User: This class represents the User entity and represents a user with a username and password. Each user has a shopping cart created for them upon sign up.
+ShoppingCart: This represents a user's cart. One is created for every user upon sign up. The cart is able to contain books and is persisted between sessions.
 
-BookController: A REST controller that manages CRUD operations for books.
+Controller:
+ThymeLeafController: A controller which controls the handling of HTML requests for all features of the application.
 
+Repository Interfaces:
 BookRepository: An interface that extends the CrudRepository to provide CRUD operations for the Book entity.
-
-ShoppingCart: This class simulates a shopping cart that holds a list of books. It provides methods for managing the cart, such as adding, removing, and calculating the total cost of books.
+CartRepository:An interface extending the CrudRepository to provide persistence for created shopping carts.
+UserRepository: An interface extending the CrudRepository to provide persistence for created users
 
 Database Schemas 
 
