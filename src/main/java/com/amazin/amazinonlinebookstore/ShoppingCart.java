@@ -1,17 +1,30 @@
 package com.amazin.amazinonlinebookstore;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class ShoppingCart {
-
-    public static /* we might not want static here */ ArrayList<Book> cart;
-    private final User user;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Book> cart;
+    @OneToOne
+    private User user;
+    public ShoppingCart(){
+        cart = new ArrayList<Book>();
+        this.user = null;
+    }
 
     public ShoppingCart(User user) {
         cart = new ArrayList<Book>();
         this.user = user;
     }
 
+    public List<Book> getCartBooks(){
+        return cart;
+    }
     public void addToCart(Book book){
         cart.add(book);
     }
