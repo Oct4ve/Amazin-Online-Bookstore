@@ -56,5 +56,6 @@ User
 
 UML Diagram
 
-![image](https://github.com/user-attachments/assets/de9a1824-5f82-4312-830b-d96c65d85fdb)
+![image](https://github.com/user-attachments/assets/8a801513-fb7b-444e-9973-1bfd0e1780c1)
+
 
