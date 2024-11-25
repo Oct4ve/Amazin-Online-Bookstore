@@ -244,23 +244,56 @@ public class ThymeLeafController {
         return "sort_by_date_new";
     }
 
-    @GetMapping("/search_book")
-    public String showSearchBookForm(Model model) {
-        return "search_book";
-    }
-
-    @PostMapping("/search_book")
-    public String searchBook(@RequestParam("title") String title, Model model) {
-        Book book = bookRepository.findByTitle(title);
-
-        if (book != null) {
-            model.addAttribute("Book", book);
-            return "book_view";
-        } else {
-            model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
+    // Checkout page
+    @GetMapping("/checkout")
+    public String checkoutPage(Model model, @ModelAttribute("user") User user) {
+        if (user == null || user.getCart() == null) {
+            model.addAttribute("userBooks", List.of()); // Empty cart
+            model.addAttribute("total", 0.0);
+            return "checkout";
         }
 
-        return "search_book";
+        List<Book> userBooks = user.getCart().getCartBooks();
+        double total = user.getCart().calculateTotal();
+
+        model.addAttribute("userBooks", userBooks);
+        model.addAttribute("total", total);
+        model.addAttribute("currentUser", user.getUsername());
+        return "checkout";
     }
+
+    // Handle checkout
+    @PostMapping("/checkout")
+    public String completePurchase(@ModelAttribute("user") User user) {
+        if (user != null && user.getCart() != null) {
+            user.getCart().emptyCart(); // Clear the cart after purchase
+            userRepository.save(user); // Save the updated user
+        }
+        return "redirect:/"; // Redirect to home page after checkout
+    }
+
+    @PostMapping("/purchase")
+    public String purchaseBooks(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getCart() == null || user.getCart().getCartBooks().isEmpty()) {
+            model.addAttribute("message", "Your cart is empty. Add books to make a purchase.");
+            return "redirect:/cart"; // Redirect to cart if empty
+        }
+
+        // Get the books to display them on the confirmation page
+        List<Book> purchasedBooks = user.getCart().getCartBooks();
+        double total = user.getCart().calculateTotal();
+
+        // Clear the cart after purchase
+        user.getCart().emptyCart();
+        userRepository.save(user); // Persist changes to the database
+
+        // Add the purchased books and total to the model for the confirmation page
+        model.addAttribute("purchasedBooks", purchasedBooks);
+        model.addAttribute("total", total);
+
+        return "purchased"; // Redirect to the purchased.html confirmation page
+    }
+
 }
 

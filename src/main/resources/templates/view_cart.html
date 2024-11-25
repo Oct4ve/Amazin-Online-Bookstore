@@ -36,5 +36,12 @@
     <p>Your cart is empty. Start adding books to see them here!</p>
 </div>
 
+<!-- Checkout button -->
+<div th:if="${userBooks != null && !#lists.isEmpty(userBooks)}">
+    <form th:action="@{/checkout}" method="get">
+        <button type="submit">Proceed to Checkout</button>
+    </form>
+</div>
+
 </body>
 </html>
