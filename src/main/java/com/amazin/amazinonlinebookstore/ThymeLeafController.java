@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -192,6 +194,54 @@ public class ThymeLeafController {
     @GetMapping("/error")
     public String showErrorPage() {
         return "error";
+    }
+
+    @GetMapping("/sort_books")
+    public String sortBooks(){
+        return "sort_books";
+    }
+
+    @GetMapping("/sort_by_author")
+    public String sortByAuthor(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getAuthor));
+        model.addAttribute("books", books);
+        return "sort_by_author";
+    }
+    @GetMapping("/sort_by_title")
+    public String sortByTitle(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getTitle));
+        model.addAttribute("books", books);
+        return "sort_by_title";
+    }
+    @GetMapping("/sort_by_price_low")
+    public String sortByPriceLow(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getPrice));
+        model.addAttribute("books", books);
+        return "sort_by_price_low";
+    }
+    @GetMapping("/sort_by_price_high")
+    public String sortByPriceHigh(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getPrice).reversed());
+        model.addAttribute("books", books);
+        return "sort_by_price_high";
+    }
+    @GetMapping("/sort_by_date_old")
+    public String sortByDateOldestFirst(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getPublishDate));
+        model.addAttribute("books", books);
+        return "sort_by_date_old";
+    }
+    @GetMapping("/sort_by_date_new")
+    public String sortByDateNewestFirst(Model model) {
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        books.sort(Comparator.comparing(Book::getPublishDate).reversed());
+        model.addAttribute("books", books);
+        return "sort_by_date_new";
     }
 }
 

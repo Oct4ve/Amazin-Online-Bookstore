@@ -13,7 +13,7 @@ public class Book {
     private String title;
     // private Image cover;
     private String description;
-    private String isbn;
+    private String ISBN;
     private String author;
     private LocalDate publishDate;
     private LocalDate receiveDate;
@@ -24,16 +24,16 @@ public class Book {
         // this.cover = null;
         this.description = null;
         this.author = null;
-        this.isbn = null;
+        this.ISBN = null;
         this.publishDate = null;
         this.price = 0;
     }
-    public Book(String title, /*Image cover,*/ String description, String author, String isbn, LocalDate publishDate, double price) {
+    public Book(String title, /*Image cover,*/ String description, String author, String ISBN, LocalDate publishDate, double price) {
         this.title = title;
         // this.cover = cover;
         this.description = description;
         this.author = author;
-        this.isbn = isbn;
+        this.ISBN = ISBN;
         this.publishDate = publishDate;
         this.price = price;
     }
@@ -41,7 +41,7 @@ public class Book {
     public String getTitle() { return title; }
     // public Image getCover() { return cover; }
     public String getDescription() { return description; }
-    public String getISBN() { return isbn; }
+    public String getISBN() { return ISBN; }
     public String getAuthor() { return author; }
     public double getPrice() { return price; }
     public long getId() { return id; }
@@ -51,7 +51,7 @@ public class Book {
     public void setTitle(String newTitle) { this.title = newTitle; }
     // public void setCover(Image cover) { this.cover = cover; }
     public void setDescription(String description) { this.description = description; }
-    public void setIsbn(String isbn) { this.isbn = isbn; }
+    public void setISBN(String isbn) { this.ISBN = isbn; }
     public void setAuthor(String author) { this.author = author; }
     public void setPrice(double price) { this.price = price; }
     public void setId(long id) { this.id = id; }
@@ -60,7 +60,7 @@ public class Book {
 
     @Override
     public String toString(){
-        return "\nTitle: " + title + "\nAuthor: " + author + "\nPublish Date: " + publishDate + "\nISBN: " + isbn + "\nPrice: " + price;
+        return "\nTitle: " + title + "\nAuthor: " + author + "\nPublish Date: " + publishDate + "\nISBN: " + ISBN + "\nPrice: " + price;
     }
     @Override
     public boolean equals(Object obj) {
