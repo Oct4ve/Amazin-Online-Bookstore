@@ -10,16 +10,19 @@
 <!-- Navigation Menu -->
 <nav>
   <ul>
-    <li><a href="/login">Login</a></li>
-    <li><a href="/add_book">Add Book</a></li>
-    <li><a href="/remove_book">Remove Book</a></li>
-    <li><a href="/cart">Shopping Cart</a></li>
+    <li th:if="${user == null}"><a href="/signup">Sign Up</a></li>
+    <li th:if="${user == null}"><a href="/login">Login</a></li>
+    <li th:if="${user != null}"><a href="/add_book">Add Book</a></li>
+    <li th:if="${user != null}"><a href="/remove_book">Remove Book</a></li>
+    <li th:if="${user != null}"><a href="/sort_books">Sort Books</a></li>
+    <li th:if="${user != null}"><a href="/cart">Shopping Cart</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
 </nav>
 
 <!-- Main Content -->
 <h1>Welcome to Amazin Online Bookstore</h1>
+<p th:text="'Logged in as: ' + ${currentUser}"></p>
 <h2>Our Collection of Books</h2>
 
 <div>

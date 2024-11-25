@@ -16,6 +16,11 @@
 
 <h1>Add a New Book</h1>
 
+<!-- Error Message -->
+<div th:if="${errorMessage}" class="error">
+  <p th:text="${errorMessage}"></p>
+</div>
+
 <!-- Form to Add a Book -->
 <form th:action="@{/add_book}" th:object="${book}" method="post" enctype="multipart/form-data">
   <div>
@@ -28,10 +33,10 @@
     <input type="text" id="author" th:field="*{author}" placeholder="Enter author name" required />
   </div>
 
-  <!--<div>
+  <div>
     <label for="isbn">ISBN:</label>
-    <input type="text" id="isbn" th:field="*{isbn}" placeholder="Enter ISBN" required />
-  </div> -->
+    <input type="text" id="isbn" th:field="*{ISBN}" placeholder="Enter ISBN" required />
+  </div>
 
   <div>
     <label for="description">Description:</label>

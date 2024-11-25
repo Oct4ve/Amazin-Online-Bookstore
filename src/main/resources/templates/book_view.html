@@ -4,6 +4,15 @@
     <title>Book Details</title>
 </head>
 <body>
+
+<!-- Navigation Menu -->
+<nav>
+    <ul>
+        <li><a href="/cart">Your Cart</a></li>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+
 <h1>Book Details</h1>
 
 <div>
@@ -14,5 +23,13 @@
     <p><strong>Publish Date:</strong> <span th:text="${#temporals.format(Book.publishDate, 'yyyy-MM-dd')}">Publish Date</span></p>
     <p><strong>Price:</strong> $<span th:text="${Book.getPrice()}">Price</span></p>
 </div>
+
+<!-- Form to Add Book to Cart -->
+<form th:action="@{/addToCart}" method="post">
+    <!-- Pass the book's ID to the controller -->
+    <input type="hidden" th:name="bookId" th:value="${Book.getId()}" />
+    <button type="submit">Add to Cart</button>
+</form>
+
 </body>
 </html>

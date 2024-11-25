@@ -1,10 +1,26 @@
 package com.amazin.amazinonlinebookstore;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private final String username;
     private final String password;
     private final PERMISSIONS permissions;
+    @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     private final ShoppingCart cart;
+
+    public User(){
+        this.username = "";
+        this.password = "";
+        this.permissions = PERMISSIONS.BASIC;
+        this.cart = null;
+    }
 
     public User(String username, String password){
         this.username = username;
@@ -28,4 +44,5 @@ public class User {
     public void addToUserCart(Book book){
         this.cart.addToCart(book);
     }
+    public void removeFromUserCart(Book book) { this.cart.removeFromCart(book); }
 }
