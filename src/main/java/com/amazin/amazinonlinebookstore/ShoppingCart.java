@@ -25,6 +25,11 @@ public class ShoppingCart {
     public List<Book> getCartBooks(){
         return cart;
     }
+
+    public User getUser(){
+        return user;
+    }
+
     public void addToCart(Book book){
         cart.add(book);
     }

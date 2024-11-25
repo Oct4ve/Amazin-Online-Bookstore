@@ -23,6 +23,8 @@ public class ThymeLeafControllerTest {
     @MockBean
     private BookRepository bookRepository;
 
+    @MockBean UserRepository userRepository;
+
     @Test
     public void testHomePage() throws Exception {
         // Mock repository response
@@ -31,7 +33,8 @@ public class ThymeLeafControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
-                .andExpect(model().attributeExists("books"));
+                .andExpect(model().attributeExists("books"))
+                .andExpect(model().attribute("currentUser", "Guest"));
     }
 
     @Test
@@ -66,9 +69,29 @@ public class ThymeLeafControllerTest {
 
         mockMvc.perform(post("/add_book")
                         .param("title", "New Book")
+                        .param("description", "Test Description")
+                        .param("author", "Test Author")
+                        .param("isbn", "1234567890123")
+                        .param("price", "40.00")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    public void testAddBook_TitleAlreadyExists() throws Exception {
+        Book existingBook = new Book();
+        existingBook.setTitle("Existing Book");
+
+        Mockito.when(bookRepository.findByTitle("Existing Book")).thenReturn(existingBook);
+
+        mockMvc.perform(post("/add_book")
+                        .param("title", "Existing Book")
+                        .param("description", "Duplicate Book")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isOk())
+                .andExpect(view().name("add_book"))
+                .andExpect(model().attributeExists("errorMessage"));
     }
 
     @Test
@@ -97,7 +120,7 @@ public class ThymeLeafControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
                 .andExpect(view().name("remove_book"))
-                .andExpect(model().attributeExists("message"));
+                .andExpect(model().attribute("message", "Book with title 'Sample Book' was successfully deleted."));
     }
 
     @Test
@@ -112,5 +135,36 @@ public class ThymeLeafControllerTest {
                 .andExpect(model().attribute("message", "Error: Book with title 'Nonexistent Book' not found."));
     }
 
+    @Test
+    public void testLoginPage() throws Exception {
+        mockMvc.perform(get("/login"))
+        .andExpect(status().isOk())
+                .andExpect(view().name("login"));
+    }
 
-}
+    @Test
+    public void testLogicAction_UserNotExist() throws Exception {
+        Mockito.when(userRepository.findByUsername("newuser")).thenReturn(null);
+
+        mockMvc.perform(post("/login")
+                    .param("username", "newuser")
+                    .param("password", "password123")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    public void testLoginAction_UserExists() throws Exception {
+        User existingUser = new User("existinguser", "password123");
+        Mockito.when(userRepository.findByUsername("existinguser")).thenReturn(existingUser);
+
+        mockMvc.perform(post("/login")
+                        .param("username", "existinguser")
+                        .param("password", "password123")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+
+    }
