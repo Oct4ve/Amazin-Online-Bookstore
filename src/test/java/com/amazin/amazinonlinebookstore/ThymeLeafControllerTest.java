@@ -176,8 +176,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByAuthor() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Z Title", "Description", "Author B", "12345", null, 20.0),
-                new Book("A Title", "Description", "Author A", "12346", null, 10.0)
+                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0),
+                new Book("A Title","", "Description", "Author A", "12346", null, 10.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -194,8 +194,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByTitle() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Z Title", "Description", "Author B", "12345", null, 20.0),
-                new Book("A Title", "Description", "Author A", "12346", null, 10.0)
+                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0),
+                new Book("A Title","", "Description", "Author A", "12346", null, 10.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -212,8 +212,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByPriceLow() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1", "Description", "Author A", "12345", null, 20.0),
-                new Book("Book2", "Description", "Author B", "12346", null, 10.0)
+                new Book("Book1","", "Description", "Author A", "12345", null, 20.0),
+                new Book("Book2","", "Description", "Author B", "12346", null, 10.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -230,8 +230,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByPriceHigh() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1", "Description", "Author A", "12345", null, 10.0),
-                new Book("Book2", "Description", "Author B", "12346", null, 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", null, 10.0),
+                new Book("Book2","", "Description", "Author B", "12346", null, 20.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -248,8 +248,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByDateOldestFirst() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1", "Description", "Author A", "12345", LocalDate.of(2000, 01, 01), 10.0),
-                new Book("Book2", "Description", "Author B", "12346", LocalDate.of(1900, 01, 01), 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(2000, 01, 01), 10.0),
+                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(1900, 01, 01), 20.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -266,8 +266,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByDateNewestFirst() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1", "Description", "Author A", "12345", LocalDate.of(1900, 01, 01), 10.0),
-                new Book("Book2", "Description", "Author B", "12346", LocalDate.of(2000, 01, 01), 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(1900, 01, 01), 10.0),
+                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(2000, 01, 01), 20.0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -287,8 +287,8 @@ public class ThymeLeafControllerTest {
         User mockUser = new User("testuser", "password");
         ShoppingCart mockCart = new ShoppingCart(mockUser);
 
-        Book book1 = new Book("Book1", "Description1", "Author1", "12345", null, 10.0);
-        Book book2 = new Book("Book2", "Description2", "Author2", "67890", null, 20.0);
+        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0);
+        Book book2 = new Book("Book2","", "Description2", "Author2", "67890", null, 20.0);
         mockCart.addToCart(book1);
         mockCart.addToCart(book2);
 
@@ -311,8 +311,8 @@ public class ThymeLeafControllerTest {
         User mockUser = new User("testuser", "password");
         ShoppingCart mockCart = new ShoppingCart(mockUser);
 
-        Book book1 = new Book("Book1", "Description1", "Author1", "12345", null, 10.0);
-        Book book2 = new Book("Book2", "Description2", "Author2", "67890", null, 20.0);
+        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0);
+        Book book2 = new Book("Book2","", "Description2", "Author2", "67890", null, 20.0);
         mockCart.addToCart(book1);
         mockCart.addToCart(book2);
 

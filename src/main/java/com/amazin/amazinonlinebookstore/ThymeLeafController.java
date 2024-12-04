@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Controller
@@ -147,18 +152,36 @@ public class ThymeLeafController {
     // Post mapping for "Add Book" page
     @PostMapping("/add_book")
     public String addBook(@ModelAttribute Book book,
-                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile, Model model) {
+                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+                          Model model) {
+        if (coverFile != null && !coverFile.isEmpty()) {
+            try {
+                // Get the absolute path to the static directory
+                String uploadDir = "src/main/resources/static/images/";
 
-        // checks if the title already exists
-        if (bookRepository.findByTitle(book.getTitle()) != null) {
-            model.addAttribute("errorMessage", "A book with this title already exists. Please choose a different title.");
-            model.addAttribute("book", book); // Retain the input values in the form
-            return "add_book"; // Return to the form with an error message
+                Path uploadPath = Paths.get(uploadDir);
+
+                // Define the file path (use the original file name)
+                String fileName = coverFile.getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+
+                // Save the file
+                Files.write(filePath, coverFile.getBytes());
+
+                // Set the relative URL for the image
+                book.setCoverImagePath("/images/" + fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "Failed to upload the cover image.");
+                return "add_book";
+            }
         }
 
-        bookRepository.save(book); // Save the book to the database
+        // Save the book to the database
+        bookRepository.save(book);
         return "redirect:/"; // Redirect to home page after saving
     }
+
 
     // Contact Info page
     @GetMapping("/contact")
