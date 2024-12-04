@@ -53,15 +53,11 @@
     <input type="date" id="publishDate" th:field="*{publishDate}" required />
   </div>
 
-  <!--<div>
-    <label for="coverUrl">Cover Image URL (Optional):</label>
-    <input type="text" id="coverUrl" th:field="*{coverUrl}" placeholder="Enter cover image URL (optional)" />
-  </div>
-
   <div>
-    <label for="coverFile">Upload Cover Image (Optional):</label>
+    <label for="coverFile">Upload Cover Image:</label>
     <input type="file" id="coverFile" name="coverFile" accept="image/*" />
-  </div> -->
+    <small>Supported formats: JPEG</small>
+  </div>
 
   <div>
     <button type="submit">Add Book</button>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout</title>
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<nav>
+    <ul>
+        <li><a href="/cart">Your Cart</a></li>
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+
+<h1>Checkout</h1>
+<p th:text="'Logged in as: ' + ${currentUser}"></p>
+
+<!-- Display books in the cart -->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over books in the cart -->
+        <tr th:each="book : ${userBooks}">
+            <td th:text="${book.title}">Book Title</td>
+            <td th:text="${book.price}">0.00</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Display total price -->
+<div>
+    <p><strong>Total:</strong> $<span th:text="${total}">0.00</span></p>
+</div>
+
+<!-- Purchase Button -->
+<div th:if="${userBooks != null && !#lists.isEmpty(userBooks)}">
+    <form th:action="@{/purchase}" method="post">
+        <button type="submit">Purchase</button>
+    </form>
+</div>
+
+</body>
+</html>

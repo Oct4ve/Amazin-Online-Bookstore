@@ -1,5 +1,6 @@
 package com.amazin.amazinonlinebookstore;
 
+import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-    // private Image cover;
+    private String coverImagePath;
     private String description;
     private String ISBN;
     private String author;
@@ -22,16 +23,16 @@ public class Book {
 
     public Book(){
         this.title = null;
-        // this.cover = null;
+        this.coverImagePath = null;
         this.description = null;
         this.author = null;
         this.ISBN = null;
         this.publishDate = null;
         this.price = 0;
     }
-    public Book(String title, /*Image cover,*/ String description, String author, String ISBN, LocalDate publishDate, double price) {
+    public Book(String title, String coverImage, String description, String author, String ISBN, LocalDate publishDate, double price) {
         this.title = title;
-        // this.cover = cover;
+        this.coverImagePath = coverImage;
         this.description = description;
         this.author = author;
         this.ISBN = ISBN;
@@ -48,6 +49,9 @@ public class Book {
     public long getId() { return id; }
     public LocalDate getPublishDate() { return publishDate; }
     public LocalDate getReceiveDate() { return receiveDate; }
+    public String getCoverImagePath() {return coverImagePath;}
+    public void setCoverImagePath(String coverImageURL) {this.coverImagePath = coverImageURL;}
+
 
     public void setTitle(String newTitle) { this.title = newTitle; }
     // public void setCover(Image cover) { this.cover = cover; }
