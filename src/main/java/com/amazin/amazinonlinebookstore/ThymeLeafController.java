@@ -252,7 +252,7 @@ public class ThymeLeafController {
             } else {
                 book.setStockQuantity(newStockQuantity);
                 bookRepository.save(book);
-                model.addAttribute("message", "Removed " + quantity + " book(s) with title " + title);
+                model.addAttribute("message", "Removed " + quantity + " book(s) with title " + title + ".");
             }
         } else {
             model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
@@ -368,7 +368,7 @@ public class ThymeLeafController {
             model.addAttribute("message", "Error: Cart is empty or user not found.");
         }
 
-        return "checkout_confirmation"; // Redirect to a checkout confirmation page
+        return "purchased"; // Redirect to a checkout confirmation page
     }
 
 

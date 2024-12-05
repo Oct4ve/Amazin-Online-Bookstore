@@ -22,6 +22,8 @@ public class ShoppingCartTest {
         book1.setISBN("Book One Isbn");
         book1.setISBN("Book One Isbn");
         book1.setPrice(20.00);
+        book1.setStockQuantity(10);
+        book1.setCartQuantity(0);
         book1.setId(1L);
 
         book2 = new Book();
@@ -31,6 +33,8 @@ public class ShoppingCartTest {
         book2.setISBN("Book Two Isbn");
         book2.setISBN("Book Two Isbn");
         book2.setPrice(30.00);
+        book2.setStockQuantity(10);
+        book2.setCartQuantity(0);
         book2.setId(2L);
     }
 
@@ -59,21 +63,22 @@ public class ShoppingCartTest {
     @Test
     public void testAddToCart() {
         // Add book to cart
-        cart.addToCart(book1);
+        cart.addToCart(book1, 1);
 
         // Assert that cart contains the books and has the correct size
         assertTrue(cart.getCartBooks().contains(book1));
         assertEquals(1, cart.getCartBooks().size());
+        assertEquals(1, cart.getCartBooks().get(0).getCartQuantity());
     }
 
     @Test
     void testRemoveFromCart() {
         // Add books to cart
-        cart.addToCart(book1);
-        cart.addToCart(book2);
+        cart.addToCart(book1, 1);
+        cart.addToCart(book2, 1);
 
         // Remove one book from the cart
-        cart.removeFromCart(book1);
+        cart.removeFromCart(book1, 1);
 
         // Assert the remaining state of the cart
         assertEquals(1, cart.getCartBooks().size());
@@ -84,8 +89,8 @@ public class ShoppingCartTest {
     @Test
     void testEmptyCart() {
         // Add books to cart
-        cart.addToCart(book1);
-        cart.addToCart(book2);
+        cart.addToCart(book1, 1);
+        cart.addToCart(book2, 1);
 
         // Empty all books from cart
         cart.emptyCart();
@@ -97,8 +102,8 @@ public class ShoppingCartTest {
     @Test
     void testGetFromCart() {
         // Add books to cart
-        cart.addToCart(book1);
-        cart.addToCart(book2);
+        cart.addToCart(book1, 1);
+        cart.addToCart(book2, 1);
 
         // Assert retrieval by index
         assertEquals(book1, cart.getFromCart(0));
@@ -108,7 +113,7 @@ public class ShoppingCartTest {
     @Test
     void testGetFromCart_InvalidIndex() {
         // Add book to cart
-        cart.addToCart(book1);
+        cart.addToCart(book1, 1);
 
         // Assert an invalid index throws an IndexOutOfBoundsException
         Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> {
@@ -121,8 +126,8 @@ public class ShoppingCartTest {
     @Test
     void testCalculateTotal() {
         // Add books to the cart
-        cart.addToCart(book1);
-        cart.addToCart(book2);
+        cart.addToCart(book1, 1);
+        cart.addToCart(book2, 1);
 
         // Calculate the total price
         double total = cart.calculateTotal();

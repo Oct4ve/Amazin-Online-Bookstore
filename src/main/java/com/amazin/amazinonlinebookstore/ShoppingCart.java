@@ -42,18 +42,19 @@ public class ShoppingCart {
             if (existingBook.getId() == book.getId()) {
                 int newCartQuantity = existingBook.getCartQuantity() + quantity;
 
-                if (newCartQuantity > book.getStockQuantity()) {
+                if (newCartQuantity > existingBook.getStockQuantity()) {
                     // Ensure the user can't exceed stock quantity
-                    return "Error: Cannot add more than what is in stock (" + book.getStockQuantity() + ").";
+                    return "Error: Cannot add more than what is in stock (" + existingBook.getStockQuantity() + ").";
                 }
 
                 // Update the quantity if it doesn't exceed stock
                 existingBook.setCartQuantity(newCartQuantity);
+                book.setCartQuantity(newCartQuantity);
                 return "Book quantity updated in cart.";
             }
         }
 
-        // If the book is not in the cart add it
+        // If the book is not in the cart, add it
         if (quantity <= book.getStockQuantity()) {
             book.setCartQuantity(quantity);
             cart.add(book);
