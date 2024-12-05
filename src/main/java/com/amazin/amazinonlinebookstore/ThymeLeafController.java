@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -98,6 +99,19 @@ public class ThymeLeafController {
         model.addAttribute("success", "Account created successfully! You can now log in.");
         return "redirect:/login"; // Redirect to the login page
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session, SessionStatus sessionStatus) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            // Save the user to persist the cart before clearing the session
+            userRepository.save(user);
+        }
+        session.invalidate();
+        sessionStatus.setComplete();
+        return "redirect:/";
+    }
+
 
     // Gets current user
     @ModelAttribute("user")
@@ -238,7 +252,7 @@ public class ThymeLeafController {
             } else {
                 book.setStockQuantity(newStockQuantity);
                 bookRepository.save(book);
-                model.addAttribute("message", "Removed " + quantity + "of books with title " + title);
+                model.addAttribute("message", "Removed " + quantity + " book(s) with title " + title);
             }
         } else {
             model.addAttribute("message", "Error: Book with title '" + title + "' not found.");

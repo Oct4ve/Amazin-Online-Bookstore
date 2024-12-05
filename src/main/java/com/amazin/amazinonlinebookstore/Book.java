@@ -24,7 +24,7 @@ public class Book {
     private int stockQuantity;
 
     //Not persisted to the database
-    @Transient
+    @Column(nullable = false, columnDefinition = "int default 0")
     private int cartQuantity;
 
     public Book(){
