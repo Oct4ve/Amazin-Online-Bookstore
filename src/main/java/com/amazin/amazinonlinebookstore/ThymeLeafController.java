@@ -65,6 +65,12 @@ public class ThymeLeafController {
             return "login"; // Redirect back to login with an error message
         }
 
+        if (user.getCart() == null) {
+            ShoppingCart cart = new ShoppingCart(user);
+            user.setCart(cart);
+            userRepository.save(user);
+        }
+
         // If login is successful, add user to session
         session.setAttribute("user", user);
         return "redirect:/"; // Redirect to the home page
@@ -119,23 +125,29 @@ public class ThymeLeafController {
     @PostMapping("/addToCart")
     public String addBookToCart(@RequestParam("bookId") Long bookId, @RequestParam("quantity") int quantity, HttpSession session, Model model) {
         User user = getUserFromSession(session);
-        Book bookToAdd = bookRepository.findByid(bookId);
-
-        if (bookToAdd != null) {
-            String result = user.getCart().addToCart(bookToAdd, quantity);
-            if (result.startsWith("Error:")) {
-                model.addAttribute("message", result);
-                return "book_details";
-            }
-            userRepository.save(user);
-        } else {
-            // Handle the case where the book is already in the cart or doesn't exist
-            // I gotta put something here to display the error message on the page
-            model.addAttribute("message", "Error: Book not found or none in stock.");
+        if (user == null || user.getCart() == null) {
+            model.addAttribute("message", "Error: User or cart not found.");
+            return "redirect:/";
         }
+
+        Book bookToAdd = bookRepository.findByid(bookId);
+        if (bookToAdd == null) {
+            model.addAttribute("message", "Error: Book not found.");
+            return "redirect:/cart";
+        }
+
+        // Add or update the book in the cart
+        String result = user.getCart().addToCart(bookToAdd, quantity);
+        if (result.startsWith("Error:")) {
+            model.addAttribute("message", result);
+            return "redirect:/cart";
+        }
+
+        userRepository.save(user);
 
         return "redirect:/cart";
     }
+
 
     @PostMapping("/removeFromCart")
     public String removeBookFromCart(@RequestParam("bookId") Long bookId, @RequestParam("quantity") int quantity, HttpSession session, Model model) {
@@ -144,9 +156,9 @@ public class ThymeLeafController {
 
         if (bookToRemove != null) {
             String result = user.getCart().removeFromCart(bookToRemove, quantity);
-            model.addAttribute("message", result);
 
             if (result.startsWith("Error:")) {
+                model.addAttribute("message", result);
                 return "cart";
             }
 

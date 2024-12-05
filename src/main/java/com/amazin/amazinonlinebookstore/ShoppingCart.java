@@ -10,7 +10,8 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "shopping_cart_id")
     private List<Book> cart;
     @OneToOne
     private User user;
@@ -28,6 +29,10 @@ public class ShoppingCart {
         return cart;
     }
 
+    public void setCart(List<Book> cart) {
+        this.cart = cart;
+    }
+
     public User getUser(){
         return user;
     }
@@ -35,8 +40,7 @@ public class ShoppingCart {
     public String addToCart(Book book, int quantity) {
         for (Book existingBook : cart) {
             if (existingBook.getId() == book.getId()) {
-                int currentCartQuantity = existingBook.getCartQuantity();
-                int newCartQuantity = currentCartQuantity + quantity;
+                int newCartQuantity = existingBook.getCartQuantity() + quantity;
 
                 if (newCartQuantity > book.getStockQuantity()) {
                     // Ensure the user can't exceed stock quantity

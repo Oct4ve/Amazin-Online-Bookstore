@@ -13,7 +13,7 @@ public class User {
     private final String password;
     private final PERMISSIONS permissions;
     @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
-    private final ShoppingCart cart;
+    private ShoppingCart cart;
 
     public User(){
         this.username = "";
@@ -40,6 +40,9 @@ public class User {
     }
     public ShoppingCart getCart() {
         return cart;
+    }
+    public void setCart(ShoppingCart cart) {
+        this.cart = cart;
     }
     public void addToUserCart(Book book, int quantity){
         assert this.cart != null;
