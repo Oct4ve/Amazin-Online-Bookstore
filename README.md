@@ -58,4 +58,13 @@ UML Diagram
 
 ![image](https://github.com/user-attachments/assets/8a801513-fb7b-444e-9973-1bfd0e1780c1)
 
+Plan for next Sprint
+
+For Milestone 3 our plan is:
+- Add covers for books
+- Add a quantity attribute to books so we can have multiple of the same books
+- Make the UI nicer and the interface should not have any dangling links to non-implemented features
+- Book recommendations and add the values needed for Jaccard Distance
+- UI and Integration tests for the new implemented features
+- Make recieve_date work for what date the book was added to the site
 

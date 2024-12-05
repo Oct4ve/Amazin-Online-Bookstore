@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -150,18 +152,36 @@ public class ThymeLeafController {
     // Post mapping for "Add Book" page
     @PostMapping("/add_book")
     public String addBook(@ModelAttribute Book book,
-                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile, Model model) {
+                          @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+                          Model model) {
+        if (coverFile != null && !coverFile.isEmpty()) {
+            try {
+                // Get the absolute path to the static directory
+                String uploadDir = "src/main/resources/static/images/";
 
-        // checks if the title already exists
-        if (bookRepository.findByTitle(book.getTitle()) != null) {
-            model.addAttribute("errorMessage", "A book with this title already exists. Please choose a different title.");
-            model.addAttribute("book", book); // Retain the input values in the form
-            return "add_book"; // Return to the form with an error message
+                Path uploadPath = Paths.get(uploadDir);
+
+                // Define the file path (use the original file name)
+                String fileName = coverFile.getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+
+                // Save the file
+                Files.write(filePath, coverFile.getBytes());
+
+                // Set the relative URL for the image
+                book.setCoverImagePath("/images/" + fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "Failed to upload the cover image.");
+                return "add_book";
+            }
         }
 
-        bookRepository.save(book); // Save the book to the database
+        // Save the book to the database
+        bookRepository.save(book);
         return "redirect:/"; // Redirect to home page after saving
     }
+
 
     // Contact Info page
     @GetMapping("/contact")
@@ -243,5 +263,79 @@ public class ThymeLeafController {
         model.addAttribute("books", books);
         return "sort_by_date_new";
     }
+
+    // Checkout page
+    @GetMapping("/checkout")
+    public String checkoutPage(Model model, @ModelAttribute("user") User user) {
+        if (user == null || user.getCart() == null) {
+            model.addAttribute("userBooks", List.of()); // Empty cart
+            model.addAttribute("total", 0.0);
+            return "checkout";
+        }
+
+        List<Book> userBooks = user.getCart().getCartBooks();
+        double total = user.getCart().calculateTotal();
+
+        model.addAttribute("userBooks", userBooks);
+        model.addAttribute("total", total);
+        model.addAttribute("currentUser", user.getUsername());
+        return "checkout";
+    }
+
+    // Handle checkout
+    @PostMapping("/checkout")
+    public String completePurchase(@ModelAttribute("user") User user) {
+        if (user != null && user.getCart() != null) {
+            for(Book book: user.getCart().getCartBooks()){
+                long bookId = book.getId();
+                user.removeFromUserCart(bookRepository.findByid(bookId));
+            }
+            userRepository.save(user); // Save the updated user
+        }
+        return "redirect:/"; // Redirect to home page after checkout
+    }
+
+    @PostMapping("/purchase")
+    public String purchaseBooks(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null || user.getCart() == null || user.getCart().getCartBooks().isEmpty()) {
+            model.addAttribute("message", "Your cart is empty. Add books to make a purchase.");
+            return "redirect:/cart"; // Redirect to cart if empty
+        }
+
+        // Get the books to display them on the confirmation page
+        List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
+        double total = user.getCart().calculateTotal();
+
+        // Clear the cart after purchase
+        user.getCart().emptyCart();
+        userRepository.save(user); // Persist changes to the database
+
+        // Add the purchased books and total to the model for the confirmation page
+        model.addAttribute("purchasedBooks", purchasedBooks);
+        model.addAttribute("total", total);
+
+        return "purchased"; // Redirect to the purchased.html confirmation page
+    }
+
+    @GetMapping("/search_book")
+    public String showSearchBookForm(Model model) {
+        return "search_book";
+    }
+
+    @PostMapping("/search_book")
+    public String searchBook(@RequestParam("title") String title, Model model) {
+        Book book = bookRepository.findByTitle(title);
+
+        if (book != null) {
+            model.addAttribute("Book", book);
+            return "book_view";
+        } else {
+            model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
+        }
+
+        return "search_book";
+    }
+
 }
 
