@@ -88,14 +88,12 @@ public class ShoppingCart {
         return cart.get(index);
     }
 
-    public double calculateTotal(){
+    public double calculateTotal() {
         double total = 0;
-        for (Book book: cart) {
-            total += book.getPrice();
+        for (Book book : cart) {
+            total += book.getPrice() * book.getCartQuantity();
         }
-
         return total;
     }
-
 
 }

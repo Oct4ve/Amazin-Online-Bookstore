@@ -55,10 +55,7 @@
 
   <div>
     <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity"
-           th:attr="max=${Book.getStockQuantity()}"
-           min="1" required />
-    <small>Available stock: <span th:text="${Book.getStockQuantity()}"></span></small>
+    <input type="number" id="quantity" th:field="*{stockQuantity}" min="1" placeholder="Enter quantity" required />
   </div>
 
   <div>

@@ -311,7 +311,6 @@ public class ThymeLeafController {
     public String completePurchase(@ModelAttribute("user") User user, Model model) {
         if (user != null && user.getCart() != null) {
             List<Book> userBooks = user.getCart().getCartBooks();
-            double total = 0;
 
             for (Book book : userBooks) {
                 Book bookInRepository = bookRepository.findByid(book.getId());
@@ -327,11 +326,10 @@ public class ThymeLeafController {
                             bookInRepository.getStockQuantity() - book.getCartQuantity()
                     );
                     bookRepository.save(bookInRepository);
-
-                    // Add to the total
-                    total += book.getPrice() * book.getCartQuantity();
                 }
             }
+
+            double total = user.getCart().calculateTotal();
 
             // Clear the user's cart
             user.getCart().emptyCart();
@@ -358,7 +356,6 @@ public class ThymeLeafController {
         }
 
         List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
-        double total = 0;
 
         for (Book book : purchasedBooks) {
             Book bookInRepository = bookRepository.findByid(book.getId());
@@ -374,11 +371,10 @@ public class ThymeLeafController {
                         bookInRepository.getStockQuantity() - book.getCartQuantity()
                 );
                 bookRepository.save(bookInRepository);
-
-                // Calculate total
-                total += book.getPrice() * book.getCartQuantity();
             }
         }
+
+        double total = user.getCart().calculateTotal();
 
         // Clear the user's cart after purchase
         user.getCart().emptyCart();
