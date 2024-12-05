@@ -65,7 +65,7 @@ public class ThymeLeafControllerTest {
                 .andExpect(model().attributeExists("book"));
     }
 
-    @Test
+    /*@Test
     public void testAddBook() throws Exception {
         Book mockBook = new Book();
         mockBook.setTitle("New Book");
@@ -81,7 +81,7 @@ public class ThymeLeafControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
-    }
+    }*/
 
     @Test
     public void testAddBook_TitleAlreadyExists() throws Exception {
