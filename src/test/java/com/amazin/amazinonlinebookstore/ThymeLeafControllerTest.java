@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -169,5 +170,18 @@ public class ThymeLeafControllerTest {
                 .andExpect(redirectedUrl("/"));
 
 
+    }
+    @Test
+    public void testLogout() throws Exception {
+        // Mock a session and simulate a logout
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", "testUser"); // Add a mock attribute
+
+        mockMvc.perform(get("/logout").session(session))
+                .andExpect(status().is3xxRedirection()) // Expect a redirect status
+                .andExpect(redirectedUrl("/"));        // Expect redirection to "/"
+
+        // Verify that the session is invalidated
+        assert session.isInvalid();  // Assert that the session is invalidated
     }
 }
