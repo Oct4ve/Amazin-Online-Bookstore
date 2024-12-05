@@ -20,6 +20,12 @@ public class Book {
     private LocalDate publishDate;
     private LocalDate receiveDate;
     private double price;
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int stockQuantity;
+
+    //Not persisted to the database
+    @Transient
+    private int cartQuantity;
 
     public Book(){
         this.title = null;
@@ -29,8 +35,10 @@ public class Book {
         this.ISBN = null;
         this.publishDate = null;
         this.price = 0;
+        this.stockQuantity = 0;
+        this.cartQuantity = 0;
     }
-    public Book(String title, String coverImage, String description, String author, String ISBN, LocalDate publishDate, double price) {
+    public Book(String title, String coverImage, String description, String author, String ISBN, LocalDate publishDate, double price, int stockQuantity, int cartQuantity) {
         this.title = title;
         this.coverImagePath = coverImage;
         this.description = description;
@@ -38,6 +46,8 @@ public class Book {
         this.ISBN = ISBN;
         this.publishDate = publishDate;
         this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.cartQuantity = cartQuantity;
     }
 
     public String getTitle() { return title; }
@@ -51,6 +61,12 @@ public class Book {
     public LocalDate getReceiveDate() { return receiveDate; }
     public String getCoverImagePath() {return coverImagePath;}
     public void setCoverImagePath(String coverImageURL) {this.coverImagePath = coverImageURL;}
+    public int getStockQuantity() {
+        return  stockQuantity;
+    }
+    public int getCartQuantity() {
+        return  cartQuantity;
+    }
 
 
     public void setTitle(String newTitle) { this.title = newTitle; }
@@ -62,10 +78,16 @@ public class Book {
     public void setId(long id) { this.id = id; }
     public void setPublishDate(LocalDate newDate) { this.publishDate = newDate; }
     public void setReceiveDate(LocalDate newDate) { this.receiveDate = newDate; }
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+    public void setCartQuantity(int cartQuantity) {
+        this.cartQuantity = cartQuantity;
+    }
 
     @Override
     public String toString(){
-        return "\nTitle: " + title + "\nAuthor: " + author + "\nPublish Date: " + publishDate + "\nISBN: " + ISBN + "\nPrice: " + price;
+        return "\nTitle: " + title + "\nAuthor: " + author + "\nPublish Date: " + publishDate + "\nISBN: " + ISBN + "\nPrice: " + price + "\nStock Quantity: " + stockQuantity + "\nCart Quantity: " + cartQuantity;
     }
     @Override
     public boolean equals(Object obj) {

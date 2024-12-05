@@ -117,28 +117,45 @@ public class ThymeLeafController {
 
     // Adds a book to the user's cart
     @PostMapping("/addToCart")
-    public String addBookToCart(@RequestParam("bookId") Long bookId, HttpSession session) {
+    public String addBookToCart(@RequestParam("bookId") Long bookId, @RequestParam("quantity") int quantity, HttpSession session, Model model) {
         User user = getUserFromSession(session);
         Book bookToAdd = bookRepository.findByid(bookId);
 
-        if (bookToAdd != null && !user.getCart().getCartBooks().contains(bookToAdd)) {
-            // Add the book to the cart only if it's not already in the cart
-            user.addToUserCart(bookToAdd);
+        if (bookToAdd != null) {
+            String result = user.getCart().addToCart(bookToAdd, quantity);
+            if (result.startsWith("Error:")) {
+                model.addAttribute("message", result);
+                return "book_details";
+            }
             userRepository.save(user);
         } else {
             // Handle the case where the book is already in the cart or doesn't exist
             // I gotta put something here to display the error message on the page
-            System.out.println("Book is already in the cart or not found.");
+            model.addAttribute("message", "Error: Book not found or none in stock.");
         }
 
         return "redirect:/cart";
     }
 
     @PostMapping("/removeFromCart")
-    public String removeBookFromCart(@RequestParam("bookId") Long bookId, HttpSession session) {
+    public String removeBookFromCart(@RequestParam("bookId") Long bookId, @RequestParam("quantity") int quantity, HttpSession session, Model model) {
         User user = getUserFromSession(session);
-        user.removeFromUserCart(bookRepository.findByid(bookId));
-        userRepository.save(user);
+        Book bookToRemove = bookRepository.findByid(bookId);
+
+        if (bookToRemove != null) {
+            String result = user.getCart().removeFromCart(bookToRemove, quantity);
+            model.addAttribute("message", result);
+
+            if (result.startsWith("Error:")) {
+                return "cart";
+            }
+
+            userRepository.save(user);
+        } else {
+            model.addAttribute("message", "Error: Book not found.");
+            return "cart";
+        }
+
         return "redirect:/cart";
     }
 
@@ -198,12 +215,19 @@ public class ThymeLeafController {
     // Removes book from inventory
     // This should remove the book from all carts as well.
     @PostMapping("/remove_book")
-    public String removeBook(@RequestParam("title") String title, Model model) {
+    public String removeBook(@RequestParam("title") String title, @RequestParam("quantity") int quantity, Model model) {
         Book book = bookRepository.findByTitle(title);
 
         if (book != null) {
-            bookRepository.delete(book);
-            model.addAttribute("message", "Book with title '" + title + "' was successfully deleted.");
+            int newStockQuantity = book.getStockQuantity() - quantity;
+
+            if (newStockQuantity < 0) {
+                model.addAttribute("message", "Error: no stock found");
+            } else {
+                book.setStockQuantity(newStockQuantity);
+                bookRepository.save(book);
+                model.addAttribute("message", "Removed " + quantity + "of books with title " + title);
+            }
         } else {
             model.addAttribute("message", "Error: Book with title '" + title + "' not found.");
         }
@@ -284,38 +308,86 @@ public class ThymeLeafController {
 
     // Handle checkout
     @PostMapping("/checkout")
-    public String completePurchase(@ModelAttribute("user") User user) {
+    public String completePurchase(@ModelAttribute("user") User user, Model model) {
         if (user != null && user.getCart() != null) {
-            for(Book book: user.getCart().getCartBooks()){
-                long bookId = book.getId();
-                user.removeFromUserCart(bookRepository.findByid(bookId));
+            List<Book> userBooks = user.getCart().getCartBooks();
+            double total = 0;
+
+            for (Book book : userBooks) {
+                Book bookInRepository = bookRepository.findByid(book.getId());
+                if (bookInRepository != null) {
+                    // Check if there's enough stock for the book
+                    if (bookInRepository.getStockQuantity() < book.getCartQuantity()) {
+                        model.addAttribute("message", "Error: Not enough stock for '" + book.getTitle() + "'.");
+                        return "redirect:/cart";
+                    }
+
+                    // Decrease stock based on cart quantity
+                    bookInRepository.setStockQuantity(
+                            bookInRepository.getStockQuantity() - book.getCartQuantity()
+                    );
+                    bookRepository.save(bookInRepository);
+
+                    // Add to the total
+                    total += book.getPrice() * book.getCartQuantity();
+                }
             }
-            userRepository.save(user); // Save the updated user
+
+            // Clear the user's cart
+            user.getCart().emptyCart();
+            userRepository.save(user); // Save updated user
+
+            model.addAttribute("purchasedBooks", userBooks);
+            model.addAttribute("total", total);
+            model.addAttribute("message", "Purchase completed successfully!");
+        } else {
+            model.addAttribute("message", "Error: Cart is empty or user not found.");
         }
-        return "redirect:/"; // Redirect to home page after checkout
+
+        return "checkout_confirmation"; // Redirect to a checkout confirmation page
     }
+
 
     @PostMapping("/purchase")
     public String purchaseBooks(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
+
         if (user == null || user.getCart() == null || user.getCart().getCartBooks().isEmpty()) {
             model.addAttribute("message", "Your cart is empty. Add books to make a purchase.");
             return "redirect:/cart"; // Redirect to cart if empty
         }
 
-        // Get the books to display them on the confirmation page
         List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
-        double total = user.getCart().calculateTotal();
+        double total = 0;
 
-        // Clear the cart after purchase
+        for (Book book : purchasedBooks) {
+            Book bookInRepository = bookRepository.findByid(book.getId());
+            if (bookInRepository != null) {
+                // Validate stock availability
+                if (bookInRepository.getStockQuantity() < book.getCartQuantity()) {
+                    model.addAttribute("message", "Error: Not enough stock for '" + book.getTitle() + "'.");
+                    return "redirect:/cart";
+                }
+
+                // Decrease stock
+                bookInRepository.setStockQuantity(
+                        bookInRepository.getStockQuantity() - book.getCartQuantity()
+                );
+                bookRepository.save(bookInRepository);
+
+                // Calculate total
+                total += book.getPrice() * book.getCartQuantity();
+            }
+        }
+
+        // Clear the user's cart after purchase
         user.getCart().emptyCart();
-        userRepository.save(user); // Persist changes to the database
+        userRepository.save(user); // Save updated user
 
-        // Add the purchased books and total to the model for the confirmation page
         model.addAttribute("purchasedBooks", purchasedBooks);
         model.addAttribute("total", total);
 
-        return "purchased"; // Redirect to the purchased.html confirmation page
+        return "purchased"; // Redirect to the purchased confirmation page
     }
 
     @GetMapping("/search_book")
