@@ -22,9 +22,15 @@
         <li th:each="book : ${userBooks}">
             <!-- Display book title as a clickable link -->
             <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
+            <p>
+                Quantity in cart: <span th:text="${book.cartQuantity}"></span>
+            </p>
             <!-- Form to remove the book from the cart -->
             <form th:action="@{'/removeFromCart'}" method="POST" style="display: inline;">
                 <input type="hidden" name="bookId" th:value="${book.id}" />
+                <label for="quantity">Remove Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" th:attr = "max=${book.cartQuantity}" required />
+
                 <button type="submit">Remove From Cart</button>
             </form>
         </li>

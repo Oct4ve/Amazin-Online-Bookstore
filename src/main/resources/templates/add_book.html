@@ -54,6 +54,11 @@
   </div>
 
   <div>
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" th:field="*{stockQuantity}" min="1" placeholder="Enter quantity" required />
+  </div>
+
+  <div>
     <label for="coverFile">Upload Cover Image:</label>
     <input type="file" id="coverFile" name="coverFile" accept="image/*" />
     <small>Supported formats: JPEG</small>

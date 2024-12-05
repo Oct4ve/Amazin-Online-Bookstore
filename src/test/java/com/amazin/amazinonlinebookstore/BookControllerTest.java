@@ -31,7 +31,7 @@ public class BookControllerTest {
     @Test
     public void testAddBook() {
         // Create a book object and configure the mock repository behavior
-        Book book = new Book("Effective Java","", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book = new Book("Effective Java","", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
         when(bookRepository.save(book)).thenReturn(book);
 
         // Call the addBook method in the controller
@@ -45,7 +45,7 @@ public class BookControllerTest {
     @Test
     public void testRemoveBook(){
         // Create a book object and configure the mock repository behavior
-        Book book = new Book("Effective Java","", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book = new Book("Effective Java","", "Best practices for Java", "Joshua Bloch", "8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
         // Call the removeBook method in the controller

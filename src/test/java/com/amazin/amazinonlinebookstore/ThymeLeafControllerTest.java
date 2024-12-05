@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -79,26 +80,11 @@ public class ThymeLeafControllerTest {
                         .param("author", "Test Author")
                         .param("isbn", "1234567890123")
                         .param("price", "40.00")
+                        .param("quantity", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
     }
-
-   /* @Test
-    public void testAddBook_TitleAlreadyExists() throws Exception {
-        Book existingBook = new Book();
-        existingBook.setTitle("Existing Book");
-
-        Mockito.when(bookRepository.findByTitle("Existing Book")).thenReturn(existingBook);
-
-        mockMvc.perform(post("/add_book")
-                        .param("title", "Existing Book")
-                        .param("description", "Duplicate Book")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().isOk())
-                .andExpect(view().name("add_book"))
-                .andExpect(model().attributeExists("errorMessage"));
-    }*/
 
     @Test
     public void testContactPage() throws Exception {
@@ -116,18 +102,25 @@ public class ThymeLeafControllerTest {
 
     @Test
     public void testRemoveBook() throws Exception {
-        Book mockBook = new Book();
-        mockBook.setTitle("Sample Book");
+        Book mockBook = new Book("Sample Book", "", "Sample Description", "Author Name", "1234567890",  LocalDate.now(), 10.00, 10, 0);
 
+        // Mock repository to find the book by title
         Mockito.when(bookRepository.findByTitle("Sample Book")).thenReturn(mockBook);
 
         mockMvc.perform(post("/remove_book")
                         .param("title", "Sample Book")
+                        .param("quantity", "5")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
                 .andExpect(view().name("remove_book"))
-                .andExpect(model().attribute("message", "Book with title 'Sample Book' was successfully deleted."));
+                .andExpect(model().attribute("message", "Removed 5 book(s) with title Sample Book."));
+
+        // Verify the stock was updated
+        assertEquals(5, mockBook.getStockQuantity());
+
+        Mockito.verify(bookRepository, Mockito.times(1)).save(mockBook);
     }
+
 
     @Test
     public void testRemoveBook_NotFound() throws Exception {
@@ -135,6 +128,7 @@ public class ThymeLeafControllerTest {
 
         mockMvc.perform(post("/remove_book")
                         .param("title", "Nonexistent Book")
+                        .param("quantity", "1")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
                 .andExpect(view().name("remove_book"))
@@ -177,8 +171,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByAuthor() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0),
-                new Book("A Title","", "Description", "Author A", "12346", null, 10.0)
+                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0, 10, 0),
+                new Book("A Title","", "Description", "Author A", "12346", null, 10.0, 10, 0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -195,8 +189,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByTitle() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0),
-                new Book("A Title","", "Description", "Author A", "12346", null, 10.0)
+                new Book("Z Title","", "Description", "Author B", "12345", null, 20.0, 10, 0),
+                new Book("A Title","", "Description", "Author A", "12346", null, 10.0, 10, 0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -213,8 +207,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByPriceLow() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1","", "Description", "Author A", "12345", null, 20.0),
-                new Book("Book2","", "Description", "Author B", "12346", null, 10.0)
+                new Book("Book1","", "Description", "Author A", "12345", null, 20.0, 10, 0),
+                new Book("Book2","", "Description", "Author B", "12346", null, 10.0, 10, 0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -231,8 +225,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByPriceHigh() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1","", "Description", "Author A", "12345", null, 10.0),
-                new Book("Book2","", "Description", "Author B", "12346", null, 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", null, 10.0, 10,1),
+                new Book("Book2","", "Description", "Author B", "12346", null, 20.0, 10,0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -249,8 +243,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByDateOldestFirst() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(2000, 01, 01), 10.0),
-                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(1900, 01, 01), 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(2000, 01, 01), 10.0, 10, 0),
+                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(1900, 01, 01), 20.0, 10, 0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -267,8 +261,8 @@ public class ThymeLeafControllerTest {
     @Test
     public void testSortByDateNewestFirst() throws Exception {
         List<Book> books = Arrays.asList(
-                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(1900, 01, 01), 10.0),
-                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(2000, 01, 01), 20.0)
+                new Book("Book1","", "Description", "Author A", "12345", LocalDate.of(1900, 01, 01), 10.0, 10, 0),
+                new Book("Book2","", "Description", "Author B", "12346", LocalDate.of(2000, 01, 01), 20.0, 10, 0)
         );
         Mockito.when(bookRepository.findAll()).thenReturn(books);
 
@@ -283,55 +277,53 @@ public class ThymeLeafControllerTest {
     }
 
     @Test
-    public void testCheckout() throws Exception {
-        // Mock user and cart setup
-        User mockUser = new User("testuser", "password");
-        ShoppingCart mockCart = new ShoppingCart(mockUser);
+    public void testCheckoutPageDisplaysCartItems() throws Exception {
+        // Set up user with a cart containing books
+        User user = new User("testUser", "password");
+        ShoppingCart cart = new ShoppingCart(user);
+        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0, 5, 0);
+        cart.addToCart(book1, 2);
+        user.setCart(cart);
 
-        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0);
-        Book book2 = new Book("Book2","", "Description2", "Author2", "67890", null, 20.0);
-        mockCart.addToCart(book1);
-        mockCart.addToCart(book2);
+        // Simulate a session with the logged-in user
+        Mockito.when(userRepository.findByUsername("testUser")).thenReturn(user);
 
-        mockUser.getCart().addToCart(book1);
-        mockUser.getCart().addToCart(book2);
-
-        Mockito.when(userRepository.findByUsername("testuser")).thenReturn(mockUser);
-
-        mockMvc.perform(get("/checkout").sessionAttr("user", mockUser))
+        mockMvc.perform(get("/checkout").sessionAttr("user", user))
                 .andExpect(status().isOk())
-                .andExpect(view().name("checkout"))
-                .andExpect(model().attributeExists("userBooks"))
-                .andExpect(model().attributeExists("total"))
-                .andExpect(model().attribute("total", 30.0));
+                .andExpect(model().attributeExists("userBooks", "total", "currentUser"))
+                .andExpect(model().attribute("total", 20.0))
+                .andExpect(view().name("checkout"));
     }
 
     @Test
-    public void testPurchase() throws Exception {
-        // Mock user and cart setup
-        User mockUser = new User("testuser", "password");
-        ShoppingCart mockCart = new ShoppingCart(mockUser);
+    public void testCompletePurchase() throws Exception {
+        // Set up user with a cart containing books
+        User user = new User("testUser", "password");
+        ShoppingCart cart = new ShoppingCart(user);
+        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0, 5, 0);
+        cart.addToCart(book1, 2);
+        user.setCart(cart);
 
-        Book book1 = new Book("Book1","", "Description1", "Author1", "12345", null, 10.0);
-        Book book2 = new Book("Book2","", "Description2", "Author2", "67890", null, 20.0);
-        mockCart.addToCart(book1);
-        mockCart.addToCart(book2);
+        // Mock book repository to simulate stock update
+        Mockito.when(bookRepository.findByid(book1.getId())).thenReturn(book1);
 
-        mockUser.getCart().addToCart(book1);
-        mockUser.getCart().addToCart(book2);
-
-        Mockito.when(userRepository.findByUsername("testuser")).thenReturn(mockUser);
-
-        mockMvc.perform(post("/purchase").sessionAttr("user", mockUser))
+        mockMvc.perform(post("/checkout").sessionAttr("user", user))
                 .andExpect(status().isOk())
-                .andExpect(view().name("purchased"))
-                .andExpect(model().attributeExists("purchasedBooks"))
-                .andExpect(model().attributeExists("total"))
-                .andExpect(model().attribute("total", 30.0));
+                .andExpect(model().attributeExists("purchasedBooks", "total", "message"))
+                .andExpect(model().attribute("total", 20.0))
+                .andExpect(view().name("purchased"));
 
-        // Assert that the cart is cleared after purchase
-        assertEquals(0, mockUser.getCart().getCartBooks().size());
+        // Verify stock is updated in the repository
+        assertEquals(3, book1.getStockQuantity());
+
+        // Verify the cart is cleared
+        assertEquals(0, user.getCart().getCartBooks().size());
+
+        // Verify interactions with the repository
+        Mockito.verify(bookRepository, times(1)).save(book1);
+        Mockito.verify(userRepository, times(1)).save(user);
     }
+  
     @Test
     public void testLogout() throws Exception {
         // Mock a session and simulate a logout

@@ -23,13 +23,17 @@
         <tr>
             <th>Title</th>
             <th>Price</th>
+            <th>Price</th>
+            <th>Subtotal</th>
         </tr>
         </thead>
         <tbody>
         <!-- Iterate over books in the cart -->
         <tr th:each="book : ${userBooks}">
             <td th:text="${book.title}">Book Title</td>
+            <td th:text="${book.cartQuantity}">1</td>
             <td th:text="${book.price}">0.00</td>
+            <td th:text="${book.price * book.cartQuantity}">0.00</td>
         </tr>
         </tbody>
     </table>
