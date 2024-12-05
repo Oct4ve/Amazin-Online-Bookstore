@@ -28,7 +28,7 @@ public class BookTest {
     @Test
     public void testBookCreation(){
         // Create new book with custom attributes
-        Book book = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Check that the book has the correct attributes
         assertEquals("Effective Java", book.getTitle());
@@ -64,17 +64,17 @@ public class BookTest {
     @Test
     public void testBookToString(){
         // Create new book
-        Book book = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Verify that the toString method matches the expected string format
-        String expectedString = "\nTitle: Effective Java\nAuthor: Joshua Bloch\nPublish Date: 2024-01-01\nISBN: 8647823308954\nPrice: 42.99";
+        String expectedString = "\nTitle: Effective Java\nAuthor: Joshua Bloch\nPublish Date: 2024-01-01\nISBN: 8647823308954\nPrice: 42.99\nStock Quantity: 10\nCart Quantity: 0";
         assertEquals(expectedString, book.toString());
     }
 
     @Test
     void testEquals_SameId() {
-        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
-        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
+        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Simulate same ID for testing
         book1.setId(1L);
@@ -85,8 +85,8 @@ public class BookTest {
 
     @Test
     void testEquals_DifferentId() {
-        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
-        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
+        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Simulate different IDs
         book1.setId(1L);
@@ -97,8 +97,8 @@ public class BookTest {
 
     @Test
     void testHashCode_SameId() {
-        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
-        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
+        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Simulate same ID
         book1.setId(1L);
@@ -109,8 +109,8 @@ public class BookTest {
 
     @Test
     void testHashCode_DifferentId() {
-        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
-        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
+        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Simulate different IDs
         book1.setId(1L);
@@ -120,8 +120,8 @@ public class BookTest {
     }
     @Test
     void testHashCodeAndEquals_CollectionBehavior() {
-        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
-        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99);
+        Book book1 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
+        Book book2 = new Book("Effective Java","",  "Best practices for Java", "Joshua Bloch","8647823308954", LocalDate.of(2024, 1, 1), 42.99, 10, 0);
 
         // Simulate same ID
         book1.setId(1L);

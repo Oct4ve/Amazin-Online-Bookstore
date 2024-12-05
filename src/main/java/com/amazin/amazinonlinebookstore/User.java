@@ -13,7 +13,7 @@ public class User {
     private final String password;
     private final PERMISSIONS permissions;
     @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
-    private final ShoppingCart cart;
+    private ShoppingCart cart;
 
     public User(){
         this.username = "";
@@ -41,8 +41,31 @@ public class User {
     public ShoppingCart getCart() {
         return cart;
     }
-    public void addToUserCart(Book book){
-        this.cart.addToCart(book);
+    public void setCart(ShoppingCart cart) {
+        this.cart = cart;
     }
-    public void removeFromUserCart(Book book) { this.cart.removeFromCart(book); }
+    public void addToUserCart(Book book, int quantity){
+        assert this.cart != null;
+        for (Book cartBook : this.cart.getCartBooks()) {
+            cartBook.setCartQuantity(cartBook.getCartQuantity() + quantity);
+            return;
+        }
+        book.setCartQuantity(quantity);
+        this.cart.addToCart(book, quantity);
+    }
+    public void removeFromUserCart(Book book, int quantity) {
+        for (Book cartBook : this.cart.getCartBooks()) {
+            if (cartBook.getId() == book.getId()) {
+                int currentQuantity = cartBook.getCartQuantity();
+
+                if (currentQuantity <= quantity) {
+                    this.cart.getCartBooks().remove(cartBook);
+                } else {
+                    cartBook.setCartQuantity(currentQuantity - quantity);
+                }
+                return;
+            }
+        }
+        System.out.println("Book not found in cart.");
+    }
 }
