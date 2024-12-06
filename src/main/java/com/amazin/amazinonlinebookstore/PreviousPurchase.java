@@ -15,7 +15,7 @@ public class PreviousPurchase {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<Book> books = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

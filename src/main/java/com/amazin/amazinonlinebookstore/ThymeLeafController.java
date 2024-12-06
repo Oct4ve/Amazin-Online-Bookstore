@@ -1,7 +1,6 @@
 // This controls the front end display.
 
 package com.amazin.amazinonlinebookstore;
-
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -30,6 +30,7 @@ public class ThymeLeafController {
     private UserRepository userRepository;
     @Autowired
     private PurchaseRepository purchaseRepository;
+
 
     // Home page mapping to display all books (or a welcome message)
     @GetMapping("/")
@@ -80,6 +81,8 @@ public class ThymeLeafController {
         session.setAttribute("user", user);
         return "redirect:/"; // Redirect to the home page
     }
+
+
 
     @GetMapping("/signup")
     public String signupPage() {
@@ -445,6 +448,48 @@ public class ThymeLeafController {
         }
 
         return "search_book";
+    }
+
+    @GetMapping("/book_recommendations")
+    public String showRecommendations(Model model) {return "book_recommendations";}
+
+    @PostMapping("/book_recommendations")
+    public String recommendBooks(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+
+        List<User> users = (List<User>) userRepository.findAll();
+        Map<User, List<Book>> purchaseHistories = new HashMap<>();
+        for (User user_it : users) {
+            List <Book> user_previous_purchases = user_it.convertPreviousPurchasesToOneList(user_it.getPreviousPurchases());
+            purchaseHistories.put(user_it, user_previous_purchases);
+        }
+
+        purchaseHistories.get(user);
+        List<Book> targetBooks = purchaseHistories.get(user);
+
+        Map<User, Double> similarities = new HashMap<>();
+        for (User customer : purchaseHistories.keySet()) {
+            if (!customer.equals(user)) {
+                double distance = User.jaccardDistance(targetBooks, purchaseHistories.get(customer));
+                similarities.put(customer, distance);
+            }
+        }
+
+        List<Map.Entry <User, Double>> sortedSimilarities = new ArrayList<>(similarities.entrySet());
+        sortedSimilarities.sort(Map.Entry.comparingByValue());
+
+        if (!sortedSimilarities.isEmpty()) {
+            User mostSimilarCustomer = sortedSimilarities.get(0).getKey();
+            model.addAttribute("mostSimilarCustomer", mostSimilarCustomer);
+            List<Book> recommendedBooks = new ArrayList<>(purchaseHistories.get(mostSimilarCustomer));
+            recommendedBooks.removeAll(targetBooks);
+            model.addAttribute("recommendedBooks", recommendedBooks);
+        } else {
+            model.addAttribute("message", "No recommended books found.");
+            model.addAttribute("mostSimilarCustomer", null); // Explicitly set to null
+        }
+
+        return "book_recommendations";
     }
 
     // Saves a cart to the purchaseRepository

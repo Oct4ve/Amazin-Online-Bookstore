@@ -2,7 +2,9 @@ package com.amazin.amazinonlinebookstore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -75,7 +77,43 @@ public class User {
         System.out.println("Book not found in cart.");
     }
 
+    public void similarCustomers(){
+
+    }
+
+
+    public static double jaccardDistance(List<Book> list1, List<Book> list2) {
+        // Create a list to store the intersection
+        List<Book> intersection = new ArrayList<>(list1);
+        intersection.retainAll(list2); // Retains only elements that are common to both lists
+
+        // Create a list to store the union
+        List<Book> union = new ArrayList<>(list1);
+        union.addAll(list2); // Add all elements from both lists
+
+        // Remove duplicates to get a proper union
+        Set<Book> uniqueUnion = new HashSet<>(union);
+
+        // Calculate Jaccard Index
+        double jaccardIndex = (double) intersection.size() / uniqueUnion.size();
+
+        // Calculate and return Jaccard Distance
+        return 1.0 - jaccardIndex;
+    }
+
+    public List<Book> convertPreviousPurchasesToOneList(List<PreviousPurchase> previousPurchases) {
+        List<Book> user_purchases = new ArrayList<>();
+        for (PreviousPurchase innerList : previousPurchases) {
+            user_purchases.addAll(innerList.getPurchaseBooks());
+        }
+        return user_purchases;
+    }
+
     public List<PreviousPurchase> getPreviousPurchases() {
         return previousPurchases;
+    }
+
+    public void setPreviousPurchases(List<PreviousPurchase> previousPurchases) {
+        this.previousPurchases = previousPurchases;
     }
 }
