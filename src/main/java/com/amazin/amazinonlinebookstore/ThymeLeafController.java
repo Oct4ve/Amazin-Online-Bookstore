@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 
 @Controller
@@ -26,6 +27,8 @@ public class ThymeLeafController {
     private BookRepository bookRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     // Home page mapping to display all books (or a welcome message)
     @GetMapping("/")
@@ -416,6 +419,8 @@ public class ThymeLeafController {
 
         double total = user.getCart().calculateTotal();
 
+        saveCart(purchasedBooks, user, LocalDate.now());
+
         // Clear the user's cart after purchase
         user.getCart().emptyCart();
         userRepository.save(user); // Save updated user
@@ -424,6 +429,14 @@ public class ThymeLeafController {
         model.addAttribute("total", total);
 
         return "purchased"; // Redirect to the purchased confirmation page
+    }
+
+    @GetMapping("/previous_purchases")
+    public String viewPreviousPurchases(Model model, @ModelAttribute("user") User user) {
+        if (!purchaseRepository.findAllByUser(user).isEmpty()){
+            model.addAttribute("purchases", purchaseRepository.findAllByUser(user));
+        }
+        return "previous_purchases";
     }
 
     @GetMapping("/search_book")
@@ -445,5 +458,11 @@ public class ThymeLeafController {
         return "search_book";
     }
 
+    // Saves a cart to the purchaseRepository
+    public void saveCart(List<Book> cart, User user, LocalDate date){
+        PreviousPurchase purchase = new PreviousPurchase(user, date);
+        purchase.setBooks(cart);
+        purchaseRepository.save(purchase);
+    }
 }
 
