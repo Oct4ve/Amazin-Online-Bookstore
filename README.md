@@ -69,6 +69,7 @@ User
 | permissions   | ENUM('BASIC', 'ADMIN') | NOT NULL                                           |
 | cart_id       | BIGINT                 | UNIQUE, FOREIGN KEY REFERENCES `shopping_carts(id)`|
 
+PreviousPurchase
 | Column                | Data Type | Constraints                                             |
 |-----------------------|-----------|---------------------------------------------------------|
 | previous_purchase_id  | BIGINT    | PRIMARY KEY, AUTO_INCREMENT                             |
