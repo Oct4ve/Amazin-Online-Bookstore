@@ -3,7 +3,7 @@ Amazin Online Bookstore
 The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database (in the future only special users will be able to do this), add/remove books from their cart and view all the books in the database.
 
 
-*Object Classes:*
+**Object Classes:**
 
 Book: This class represents the Book entity and contains attributes such as title, ISBN, description, author, publish date and price.
 
@@ -14,12 +14,12 @@ ShoppingCart: This represents a user's cart. One is created for every user upon 
 PreviousPurchase: Represents a previous purchase by the user. Every checkout, one is created and populated with the books previously in that user's cart
 
 
-*Controller:*
+**Controller:**
 
 ThymeLeafController: A controller which controls the handling of HTML requests for all features of the application.
 
 
-*Repository Interfaces:*
+**Repository Interfaces:**
 
 BookRepository: An interface that extends the CrudRepository to provide CRUD operations for the Book entity.
 
@@ -30,7 +30,7 @@ UserRepository: An interface extending the CrudRepository to provide persistence
 PurchaseRepository: An interface extending the CrudRepository to provide persistence for completed purchased
 
 
-*Database Schemas* 
+**Database Schemas**
 
 Book
 
