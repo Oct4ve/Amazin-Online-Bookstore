@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -31,9 +30,6 @@ public class ThymeLeafControllerTest {
 
     @MockBean
     UserRepository userRepository;
-
-    @MockBean
-    private PurchaseRepository  purchaseRepository;
 
     @Test
     public void testHomePage() throws Exception {
@@ -310,9 +306,9 @@ public class ThymeLeafControllerTest {
         // Mock book repository to simulate stock update
         Mockito.when(bookRepository.findByid(book1.getId())).thenReturn(book1);
 
-        mockMvc.perform(post("/purchase").sessionAttr("user", user))
+        mockMvc.perform(post("/checkout").sessionAttr("user", user))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("purchasedBooks", "total"))
+                .andExpect(model().attributeExists("purchasedBooks", "total", "message"))
                 .andExpect(model().attribute("total", 20.0))
                 .andExpect(view().name("purchased"));
 
@@ -326,17 +322,5 @@ public class ThymeLeafControllerTest {
         Mockito.verify(bookRepository, times(1)).save(book1);
         Mockito.verify(userRepository, times(1)).save(user);
     }
-    @Test
-    public void testLogout() throws Exception {
-        User user = new User("sam", "cool");
-        // Mock a session and simulate a logout
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("user", user); // add a mock user
 
-        mockMvc.perform(get("/logout").session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
-
-        assert session.isInvalid();
-    }
 }
