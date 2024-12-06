@@ -46,19 +46,25 @@ public class BookTest {
 
         // Set various attributes using setters
         book.setTitle("Effective Java");
+        book.setCoverImagePath("/images/effective_java_cover.jpg");
         book.setDescription("Best practices for Java");
         book.setAuthor("Joshua Bloch");
         book.setISBN("8647823308954");
         book.setPrice(42.99);
         book.setPublishDate(LocalDate.of(2024,1,1));
+        book.setStockQuantity(1);
+        book.setCartQuantity(1);
 
         // Verify that the getters return the correct values
         assertEquals("Effective Java", book.getTitle());
+        assertEquals("/images/effective_java_cover.jpg", book.getCoverImagePath());
         assertEquals("Best practices for Java", book.getDescription());
         assertEquals("Joshua Bloch", book.getAuthor());
         assertEquals("8647823308954", book.getISBN());
         assertEquals(LocalDate.of(2024, 1, 1), book.getPublishDate());
         assertEquals(42.99, book.getPrice());
+        assertEquals(1, book.getStockQuantity());
+        assertEquals(1, book.getCartQuantity());
     }
 
     @Test

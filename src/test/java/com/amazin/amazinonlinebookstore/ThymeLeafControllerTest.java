@@ -32,6 +32,9 @@ public class ThymeLeafControllerTest {
     @MockBean
     UserRepository userRepository;
 
+    @MockBean
+    private PurchaseRepository purchaseRepository;
+
     @Test
     public void testHomePage() throws Exception {
         // Mock repository response
@@ -307,9 +310,9 @@ public class ThymeLeafControllerTest {
         // Mock book repository to simulate stock update
         Mockito.when(bookRepository.findByid(book1.getId())).thenReturn(book1);
 
-        mockMvc.perform(post("/checkout").sessionAttr("user", user))
+        mockMvc.perform(post("/purchase").sessionAttr("user", user))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("purchasedBooks", "total", "message"))
+                .andExpect(model().attributeExists("purchasedBooks", "total"))
                 .andExpect(model().attribute("total", 20.0))
                 .andExpect(view().name("purchased"));
 
@@ -335,5 +338,66 @@ public class ThymeLeafControllerTest {
                 .andExpect(redirectedUrl("/"));
 
         assert session.isInvalid();
+    }
+
+    @Test
+    public void testShowEditBookForm() throws Exception {
+        // Mock data
+        Book mockBook = new Book();
+        mockBook.setId(1L);
+        mockBook.setTitle("Sample Book");
+        mockBook.setAuthor("Author Name");
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(mockBook));
+
+        // Perform GET request
+        mockMvc.perform(get("/1/edit_book"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("edit_book"))
+                .andExpect(model().attributeExists("book"))
+                .andExpect(model().attribute("book", mockBook));
+    }
+
+    @Test
+    public void testEditBook() throws Exception {
+        // Mock data
+        Book existingBook = new Book();
+        existingBook.setId(1L);
+        existingBook.setTitle("Old Title");
+        existingBook.setAuthor("Old Author");
+
+        Book updatedBook = new Book();
+        updatedBook.setTitle("New Title");
+        updatedBook.setAuthor("New Author");
+        updatedBook.setISBN("1234567890");
+        updatedBook.setDescription("Updated Description");
+        updatedBook.setPrice(10.00);
+        updatedBook.setPublishDate(LocalDate.now());
+        updatedBook.setStockQuantity(10);
+
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(existingBook));
+        Mockito.when(bookRepository.save(Mockito.any(Book.class))).thenReturn(existingBook);
+
+        // Perform POST request
+        mockMvc.perform(post("/edit_book/1")
+                        .param("title", "New Title")
+                        .param("author", "New Author")
+                        .param("ISBN", "1234567890")
+                        .param("description", "Updated Description")
+                        .param("price", "10.00")
+                        .param("publishDate", LocalDate.now().toString())
+                        .param("stockQuantity", "10")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        // Verify the book was updated
+        Mockito.verify(bookRepository).save(Mockito.argThat(book ->
+                book.getTitle().equals("New Title") &&
+                        book.getAuthor().equals("New Author") &&
+                        book.getISBN().equals("1234567890") &&
+                        book.getDescription().equals("Updated Description") &&
+                        book.getPrice() == 10.00 &&
+                        book.getStockQuantity() == 10
+        ));
     }
 }
