@@ -464,5 +464,9 @@ public class ThymeLeafController {
         purchase.setBooks(cart);
         purchaseRepository.save(purchase);
     }
+
+    @GetMapping("/book_recommendations")
+    public String showRecommendations(Model model) {return "book_recommendations";}
+
 }
 
