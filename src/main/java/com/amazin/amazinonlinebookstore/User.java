@@ -1,6 +1,7 @@
 package com.amazin.amazinonlinebookstore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,11 +16,15 @@ public class User {
     @OneToOne(cascade = {CascadeType.ALL, CascadeType.MERGE}, fetch = FetchType.EAGER, orphanRemoval = true)
     private ShoppingCart cart;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<PreviousPurchase> previousPurchases;
+
     public User(){
         this.username = "";
         this.password = "";
         this.permissions = PERMISSIONS.BASIC;
         this.cart = null;
+        this.previousPurchases = null;
     }
 
     public User(String username, String password){
@@ -27,6 +32,7 @@ public class User {
         this.password = password;
         this.permissions = PERMISSIONS.BASIC;
         this.cart = new ShoppingCart(this);
+        this.previousPurchases = new ArrayList<PreviousPurchase>();
     }
 
     public String getUsername() {
@@ -67,5 +73,9 @@ public class User {
             }
         }
         System.out.println("Book not found in cart.");
+    }
+
+    public List<PreviousPurchase> getPreviousPurchases() {
+        return previousPurchases;
     }
 }

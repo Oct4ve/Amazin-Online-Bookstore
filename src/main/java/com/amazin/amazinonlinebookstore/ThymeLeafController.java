@@ -3,6 +3,7 @@
 package com.amazin.amazinonlinebookstore;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.time.LocalDate;
 
 @Controller
 @SessionAttributes("user") // it'll store the user into a session!
@@ -26,6 +28,8 @@ public class ThymeLeafController {
     private BookRepository bookRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     // Home page mapping to display all books (or a welcome message)
     @GetMapping("/")
@@ -133,6 +137,14 @@ public class ThymeLeafController {
         model.addAttribute("userBooks", user.getCart().getCartBooks());
         model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
         return "view_cart";
+    }
+
+    @GetMapping("/previous_purchases")
+    public String viewPreviousPurchases(Model model, @ModelAttribute("user") User user) {
+        if (!purchaseRepository.findAllByUser(user).isEmpty()){
+            model.addAttribute("purchases", purchaseRepository.findAllByUser(user));
+        }
+        return "previous_purchases";
     }
 
     // Adds a book to the user's cart
@@ -333,7 +345,8 @@ public class ThymeLeafController {
     }
 
     // Handle checkout
-    @PostMapping("/checkout")
+    // This method got duplicated somehow?
+    /*@PostMapping("/checkout")
     public String completePurchase(@ModelAttribute("user") User user, Model model) {
         if (user != null && user.getCart() != null) {
             List<Book> userBooks = user.getCart().getCartBooks();
@@ -369,7 +382,7 @@ public class ThymeLeafController {
         }
 
         return "purchased"; // Redirect to a checkout confirmation page
-    }
+    }*/
 
 
     @PostMapping("/purchase")
@@ -399,6 +412,9 @@ public class ThymeLeafController {
                 bookRepository.save(bookInRepository);
             }
         }
+
+        // Saving purchase logic
+        saveCart(purchasedBooks, user, LocalDate.now());
 
         double total = user.getCart().calculateTotal();
 
@@ -431,5 +447,11 @@ public class ThymeLeafController {
         return "search_book";
     }
 
+    // Saves a cart to the purchaseRepository
+    public void saveCart(List<Book> cart, User user, LocalDate date){
+        PreviousPurchase purchase = new PreviousPurchase(user, date);
+        purchase.setBooks(cart);
+        purchaseRepository.save(purchase);
+    }
 }
 

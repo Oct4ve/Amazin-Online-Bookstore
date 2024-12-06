@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -322,5 +323,17 @@ public class ThymeLeafControllerTest {
         Mockito.verify(bookRepository, times(1)).save(book1);
         Mockito.verify(userRepository, times(1)).save(user);
     }
+    @Test
+    public void testLogout() throws Exception {
+        User user = new User("sam", "cool");
+        // Mock a session and simulate a logout
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("user", user); // add a mock user
 
+        mockMvc.perform(get("/logout").session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        assert session.isInvalid();
+    }
 }
