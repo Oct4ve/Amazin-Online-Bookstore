@@ -1,21 +1,36 @@
 Amazin Online Bookstore
 
-The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database (in the future only special users will be able to do this), add/remove books from their cart and view all the books in the database.
+The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database, add/remove books from their cart, view all books in the database, sort all books by various metrics, purchase books, view past purchases and more.
 
-Object Classes:
+
+**Object Classes:**
+
 Book: This class represents the Book entity and contains attributes such as title, ISBN, description, author, publish date and price.
+
 User: This class represents the User entity and represents a user with a username and password. Each user has a shopping cart created for them upon sign up.
+
 ShoppingCart: This represents a user's cart. One is created for every user upon sign up. The cart is able to contain books and is persisted between sessions.
 
-Controller:
+PreviousPurchase: Represents a previous purchase by the user. Every checkout, one is created and populated with the books previously in that user's cart
+
+
+**Controller:**
+
 ThymeLeafController: A controller which controls the handling of HTML requests for all features of the application.
 
-Repository Interfaces:
+
+**Repository Interfaces:**
+
 BookRepository: An interface that extends the CrudRepository to provide CRUD operations for the Book entity.
-CartRepository:An interface extending the CrudRepository to provide persistence for created shopping carts.
+
+CartRepository: An interface extending the CrudRepository to provide persistence for created shopping carts.
+
 UserRepository: An interface extending the CrudRepository to provide persistence for created users
 
-Database Schemas 
+PurchaseRepository: An interface extending the CrudRepository to provide persistence for completed purchased
+
+
+**Database Schemas**
 
 Book
 
@@ -54,17 +69,14 @@ User
 | permissions   | ENUM('BASIC', 'ADMIN') | NOT NULL                                           |
 | cart_id       | BIGINT                 | UNIQUE, FOREIGN KEY REFERENCES `shopping_carts(id)`|
 
+PreviousPurchase
+| Column                | Data Type | Constraints                                             |
+|-----------------------|-----------|---------------------------------------------------------|
+| previous_purchase_id  | BIGINT    | PRIMARY KEY, AUTO_INCREMENT                             |
+| book_id               | BIGINT    | PRIMARY KEY, FOREIGN KEY REFERENCES `books(id)`         |
+
 UML Diagram
 
-![image](https://github.com/user-attachments/assets/8a801513-fb7b-444e-9973-1bfd0e1780c1)
+![amazinonlinebookstore](https://github.com/user-attachments/assets/c9257e64-77a1-4a60-95e9-7b741192eea8)
 
-Plan for next Sprint
-
-For Milestone 3 our plan is:
-- Add covers for books
-- Add a quantity attribute to books so we can have multiple of the same books
-- Make the UI nicer and the interface should not have any dangling links to non-implemented features
-- Book recommendations and add the values needed for Jaccard Distance
-- UI and Integration tests for the new implemented features
-- Make recieve_date work for what date the book was added to the site
 
