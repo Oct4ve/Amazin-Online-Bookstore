@@ -31,9 +31,12 @@ public class ThymeLeafController {
     public String homePage(Model model, @ModelAttribute("user") User user) {
         model.addAttribute("books", bookRepository.findAll()); // Adds all books to the model
 
+        model.addAttribute("owner", "expectedOwnerUsername");
+
         // Displays who is logged in (if nobody it says Guest)
         if (user != null) {
-            model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
+            String username = user.getUsername();
+            model.addAttribute("currentUser", username); // Passes the username to the view
         } else {
             model.addAttribute("currentUser", "Guest"); // Default value if no user is logged in
         }
