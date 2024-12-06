@@ -32,6 +32,9 @@ public class ThymeLeafControllerTest {
     @MockBean
     UserRepository userRepository;
 
+    @MockBean
+    private PurchaseRepository  purchaseRepository;
+
     @Test
     public void testHomePage() throws Exception {
         // Mock repository response
@@ -307,9 +310,9 @@ public class ThymeLeafControllerTest {
         // Mock book repository to simulate stock update
         Mockito.when(bookRepository.findByid(book1.getId())).thenReturn(book1);
 
-        mockMvc.perform(post("/checkout").sessionAttr("user", user))
+        mockMvc.perform(post("/purchase").sessionAttr("user", user))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("purchasedBooks", "total", "message"))
+                .andExpect(model().attributeExists("purchasedBooks", "total"))
                 .andExpect(model().attribute("total", 20.0))
                 .andExpect(view().name("purchased"));
 
