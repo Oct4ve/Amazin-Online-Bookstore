@@ -63,5 +63,6 @@ User
 
 UML Diagram
 
-![image](https://github.com/user-attachments/assets/8a801513-fb7b-444e-9973-1bfd0e1780c1)
+![amazinonlinebookstore](https://github.com/user-attachments/assets/c9257e64-77a1-4a60-95e9-7b741192eea8)
+
 
