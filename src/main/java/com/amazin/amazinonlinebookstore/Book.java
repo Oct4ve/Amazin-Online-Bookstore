@@ -23,7 +23,7 @@ public class Book {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int stockQuantity;
 
-    //Not persisted to the database
+    //Not persisted to the database.
     @Column(nullable = false, columnDefinition = "int default 0")
     private int cartQuantity;
 
