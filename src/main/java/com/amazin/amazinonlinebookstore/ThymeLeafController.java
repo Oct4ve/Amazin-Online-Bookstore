@@ -37,9 +37,12 @@ public class ThymeLeafController {
     public String homePage(Model model, @ModelAttribute("user") User user) {
         model.addAttribute("books", bookRepository.findAll()); // Adds all books to the model
 
+        model.addAttribute("owner", "expectedOwnerUsername");
+
         // Displays who is logged in (if nobody it says Guest)
         if (user != null) {
-            model.addAttribute("currentUser", user.getUsername()); // Passes the username to the view
+            String username = user.getUsername();
+            model.addAttribute("currentUser", username); // Passes the username to the view
         } else {
             model.addAttribute("currentUser", "Guest"); // Default value if no user is logged in
         }
@@ -212,12 +215,23 @@ public class ThymeLeafController {
     public String addBook(@ModelAttribute Book book,
                           @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
                           Model model) {
+        // Check if a book with the same title already exists
+        Book existingBook = bookRepository.findByTitle(book.getTitle());
+        if (existingBook != null) {
+            model.addAttribute("errorMessage", "A book with this title already exists.");
+            return "add_book"; // Return to the same page with an error message
+        }
+
         if (coverFile != null && !coverFile.isEmpty()) {
             try {
                 // Get the absolute path to the static directory
                 String uploadDir = "src/main/resources/static/images/";
-
                 Path uploadPath = Paths.get(uploadDir);
+
+                // Ensure the directory exists
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
 
                 // Define the file path (use the original file name)
                 String fileName = coverFile.getOriginalFilename();
