@@ -12,8 +12,8 @@
   <ul>
     <li th:if="${user == null}"><a href="/signup">Sign Up</a></li>
     <li th:if="${user == null}"><a href="/login">Login</a></li>
-    <li th:if="${user != null and user.username == 'owner'}"><a href="/add_book">Add Book</a></li>
-    <li th:if="${user != null and user.username == 'owner'}"><a href="/remove_book">Remove Book</a></li>
+    <li th:if="${user != null}"><a href="/add_book">Add Book</a></li>
+    <li th:if="${user != null}"><a href="/remove_book">Remove Book</a></li>
     <li th:if="${user != null}"><a href="/sort_books">Sort Books</a></li>
     <li th:if="${user != null}"><a href="/search_book">Search Books</a></li>
     <li th:if="${user != null}"><a href="/cart">Shopping Cart</a></li>
