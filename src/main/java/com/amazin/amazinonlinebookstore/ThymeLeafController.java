@@ -453,5 +453,39 @@ public class ThymeLeafController {
         purchase.setBooks(cart);
         purchaseRepository.save(purchase);
     }
+
+    // Show the edit book form
+    @GetMapping("/{id}/edit_book")
+    public String showEditBookForm(@PathVariable Long id, Model model) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            model.addAttribute("book", optionalBook.get());
+            return "edit_book";
+        } else {
+            model.addAttribute("errorMessage", "Book not found.");
+            return "redirect:/";
+        }
+    }
+
+    // Handle the submission of the edit book form
+    @PostMapping("/{id}/edit_book")
+    public String editBook(@PathVariable Long id, @ModelAttribute("book") Book updatedBook, Model model) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setTitle(updatedBook.getTitle());
+            book.setDescription(updatedBook.getDescription());
+            book.setAuthor(updatedBook.getAuthor());
+            book.setISBN(updatedBook.getISBN());
+            book.setPrice(updatedBook.getPrice());
+            book.setStockQuantity(updatedBook.getStockQuantity());
+            bookRepository.save(book);
+            model.addAttribute("message", "Book updated successfully.");
+            return "redirect:/";
+        } else {
+            model.addAttribute("errorMessage", "Book not found.");
+            return "edit_book";
+        }
+    }
 }
 
