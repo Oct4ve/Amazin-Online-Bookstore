@@ -1,6 +1,6 @@
 Amazin Online Bookstore
 
-The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database (in the future only special users will be able to do this), add/remove books from their cart and view all the books in the database.
+The Amazin Online Bookstore is a Java-based Spring Boot application that serves as an online bookstore. This application manages submitted books and provides an interface for users to interact with them using REST API. It also provides a front-end display using Thymeleaf. Users can sign up/log in, add and remove books from the database, add/remove books from their cart, view all books in the database, sort all books by various metrics, purchase books, view past purchases and more.
 
 
 **Object Classes:**
