@@ -234,7 +234,7 @@ public class ThymeLeafController {
 
         // Save the book to the database
         bookRepository.save(book);
-        return "redirect:/"; // Redirect to home page after saving
+        return "redirect:/";
     }
 
 
@@ -344,54 +344,15 @@ public class ThymeLeafController {
         return "checkout";
     }
 
-    // Handle checkout
-    // This method got duplicated somehow?
-    /*@PostMapping("/checkout")
-    public String completePurchase(@ModelAttribute("user") User user, Model model) {
-        if (user != null && user.getCart() != null) {
-            List<Book> userBooks = user.getCart().getCartBooks();
-
-            for (Book book : userBooks) {
-                Book bookInRepository = bookRepository.findByid(book.getId());
-                if (bookInRepository != null) {
-                    // Check if there's enough stock for the book
-                    if (bookInRepository.getStockQuantity() < book.getCartQuantity()) {
-                        model.addAttribute("message", "Error: Not enough stock for '" + book.getTitle() + "'.");
-                        return "redirect:/cart";
-                    }
-
-                    // Decrease stock based on cart quantity
-                    bookInRepository.setStockQuantity(
-                            bookInRepository.getStockQuantity() - book.getCartQuantity()
-                    );
-                    bookRepository.save(bookInRepository);
-                }
-            }
-
-            double total = user.getCart().calculateTotal();
-
-            // Clear the user's cart
-            user.getCart().emptyCart();
-            userRepository.save(user); // Save updated user
-
-            model.addAttribute("purchasedBooks", userBooks);
-            model.addAttribute("total", total);
-            model.addAttribute("message", "Purchase completed successfully!");
-        } else {
-            model.addAttribute("message", "Error: Cart is empty or user not found.");
-        }
-
-        return "purchased"; // Redirect to a checkout confirmation page
-    }*/
-
-
+    // Purchasing
     @PostMapping("/purchase")
     public String purchaseBooks(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
 
         if (user == null || user.getCart() == null || user.getCart().getCartBooks().isEmpty()) {
             model.addAttribute("message", "Your cart is empty. Add books to make a purchase.");
-            return "redirect:/cart"; // Redirect to cart if empty
+            // Redirect to cart if empty
+            return "redirect:/cart";
         }
 
         List<Book> purchasedBooks = new ArrayList<>(user.getCart().getCartBooks());
@@ -399,7 +360,6 @@ public class ThymeLeafController {
         for (Book book : purchasedBooks) {
             Book bookInRepository = bookRepository.findByid(book.getId());
             if (bookInRepository != null) {
-                // Validate stock availability
                 if (bookInRepository.getStockQuantity() < book.getCartQuantity()) {
                     model.addAttribute("message", "Error: Not enough stock for '" + book.getTitle() + "'.");
                     return "redirect:/cart";
@@ -420,12 +380,12 @@ public class ThymeLeafController {
 
         // Clear the user's cart after purchase
         user.getCart().emptyCart();
-        userRepository.save(user); // Save updated user
+        userRepository.save(user);
 
         model.addAttribute("purchasedBooks", purchasedBooks);
         model.addAttribute("total", total);
 
-        return "purchased"; // Redirect to the purchased confirmation page
+        return "purchased";
     }
 
     @GetMapping("/search_book")
@@ -454,7 +414,7 @@ public class ThymeLeafController {
         purchaseRepository.save(purchase);
     }
 
-    // Show the edit book form
+    // Edit book page
     @GetMapping("/{id}/edit_book")
     public String showEditBookForm(@PathVariable Long id, Model model) {
         Optional<Book> optionalBook = bookRepository.findById(id);
@@ -467,25 +427,30 @@ public class ThymeLeafController {
         }
     }
 
-    // Handle the submission of the edit book form
-    @PostMapping("/{id}/edit_book")
-    public String editBook(@PathVariable Long id, @ModelAttribute("book") Book updatedBook, Model model) {
+    // Edits the book
+    @PostMapping("/edit_book/{id}")
+    public String editBook(@PathVariable Long id, @ModelAttribute Book book, Model model) {
         Optional<Book> optionalBook = bookRepository.findById(id);
-        if (optionalBook.isPresent()) {
-            Book book = optionalBook.get();
-            book.setTitle(updatedBook.getTitle());
-            book.setDescription(updatedBook.getDescription());
-            book.setAuthor(updatedBook.getAuthor());
-            book.setISBN(updatedBook.getISBN());
-            book.setPrice(updatedBook.getPrice());
-            book.setStockQuantity(updatedBook.getStockQuantity());
-            bookRepository.save(book);
-            model.addAttribute("message", "Book updated successfully.");
-            return "redirect:/";
-        } else {
+        if (optionalBook.isEmpty()) {
             model.addAttribute("errorMessage", "Book not found.");
-            return "edit_book";
+            return "redirect:/";
         }
+
+        // Update the existing book with new values
+        Book existingBook = optionalBook.get();
+        existingBook.setTitle(book.getTitle());
+        existingBook.setAuthor(book.getAuthor());
+        existingBook.setISBN(book.getISBN());
+        existingBook.setDescription(book.getDescription());
+        existingBook.setPrice(book.getPrice());
+        existingBook.setPublishDate(book.getPublishDate());
+        existingBook.setStockQuantity(book.getStockQuantity());
+
+        // Save updated book
+        bookRepository.save(existingBook);
+
+        return "redirect:/";
     }
 }
+
 

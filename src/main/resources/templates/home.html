@@ -33,7 +33,9 @@
     <!-- Iterate through the books list passed from the controller -->
     <li th:each="book : ${books}">
       <a th:href="@{'/' + ${book.id} + '/view'}" th:text="${book.title}"></a>
-      <button th:if="${user != null}" th:onclick="'location.href=' + '/' + ${book.id} + '/edit_book'">Edit</button>
+      <a th:if="${user != null}" th:href="@{'/' + ${book.id} + '/edit_book'}">
+        <button>Edit</button>
+      </a>
     </li>
   </ul>
 </div>
