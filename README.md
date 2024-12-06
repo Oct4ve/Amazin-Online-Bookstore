@@ -34,16 +34,17 @@ PurchaseRepository: An interface extending the CrudRepository to provide persist
 
 Book
 
-| Column       | Data Type        | Constraints                 |
-|--------------|------------------|-----------------------------|
-| id           | BIGINT           | PRIMARY KEY, AUTO_INCREMENT |
-| title        | VARCHAR(255)     | NOT NULL                    |
-| description  | TEXT             | NULLABLE                    |
-| author       | VARCHAR(255)     | NOT NULL                    |
-| isbn         | VARCHAR(20)      | UNIQUE, NOT NULL            |
-| publishDate  | DATE             | NULLABLE                    |
-| receiveDate  | DATE             | NULLABLE                    |
-| price        | DECIMAL(10,2)    | NOT NULL                    |
+| Column        | Data Type        | Constraints                 |
+|---------------|------------------|-----------------------------|
+| id            | BIGINT           | PRIMARY KEY, AUTO_INCREMENT |
+| title         | VARCHAR(255)     | NOT NULL                    |
+| description   | TEXT             | NULLABLE                    |
+| author        | VARCHAR(255)     | NOT NULL                    |
+| isbn          | VARCHAR(20)      | UNIQUE, NOT NULL            |
+| publishDate   | DATE             | NULLABLE                    |
+| price         | DECIMAL(10,2)    | NOT NULL                    |
+| stockQuantity | INT              | NOT NULL DEFAULT 0          |
+| cartQuantity  | INT              | NOT NULL DEFAULT 0          |
 
 Shopping Cart
 
